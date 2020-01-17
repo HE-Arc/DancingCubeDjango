@@ -1,0 +1,9 @@
+{% extends 'dancingcubeapp/base.html' %}
+
+{% block title %} Details | {{map.name}} {% endblock %}
+
+{% block content %}
+    <a href="{% url 'dashboard-maps' %}">back to all maps</a>
+    <h1>Specific map</h1>
+    name: <b>{{ map.name }}</b>
+{% endblock content %} 

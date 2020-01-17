@@ -1,0 +1,16 @@
+{% extends 'dancingcubeapp/base.html' %}
+
+{% block title %} List details {% endblock %}
+
+{% block content %}
+
+    <h1>All maps</h1>
+    <ul>
+    {% for map in object_list %}
+        <li><a href="{% url 'map-detail' map.id %}">{{ map.name }}</a></li>
+    {% empty %}
+        <li>No maps yet.</li>
+    {% endfor %}
+    </ul>
+
+{% endblock content %} 

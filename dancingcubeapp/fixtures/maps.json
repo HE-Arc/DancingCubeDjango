@@ -1,0 +1,16 @@
+[
+{
+    "model": "dancingcubeapp.map",
+    "pk": 1,
+    "fields": {
+        "name": "newmap"
+    }
+},
+{
+    "model": "dancingcubeapp.map",
+    "pk": 2,
+    "fields": {
+        "name": "andagain"
+    }
+}
+]
