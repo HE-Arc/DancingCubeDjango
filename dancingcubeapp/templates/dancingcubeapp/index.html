@@ -1,5 +1,15 @@
 {% extends 'dancingcubeapp/base.html' %}
 
+{% block title %}Home{% endblock %}
+
 {% block content %}
   <a href="{% url 'dashboard-maps' %}">access to maps</a>
+
+  {% if user.is_authenticated %}
+    Hi {{ user.username }}!
+    <p><a href="{% url 'logout' %}">logout</a></p>
+  {% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">login</a>
+  {% endif %}
 {% endblock content %} 
