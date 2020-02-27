@@ -6,4 +6,6 @@
     <a href="{% url 'dashboard-maps' %}">back to all maps</a>
     <h1>Specific map</h1>
     name: <b>{{ map.name }}</b>
-{% endblock content %} 
+    <a href="{% url 'map-update' map.id %}">update</a>
+    <a href="{% url 'map-delete' map.id %}">delete</a>
+{% endblock content %}
