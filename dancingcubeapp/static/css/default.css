@@ -1,0 +1,13 @@
+body {
+    background-color: #364652;
+    color : #BFB1C1;
+    font-size: 18px;
+}
+
+a {
+    color : #BFB1C1;
+}
+
+nav {
+    border-bottom: 1px solid #BFB1C1;
+}
