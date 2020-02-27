@@ -3,7 +3,7 @@ from django.urls import reverse
 
 class Map(models.Model):
     name = models.CharField(max_length=30, default='')
-    music = models.FileField(upload_to='media/musics/', blank=True)
+    music = models.FileField(upload_to='media/musics/')
     EASY = '1'
     MEDIUM = '2'
     HARD = '3'
@@ -17,9 +17,9 @@ class Map(models.Model):
         choices=diff_rates,
         default=EASY
         )
-    image = models.ImageField(upload_to='media/images/', blank=True)
+    image = models.ImageField(upload_to='media/images/')
     uploader = models.CharField(max_length=200, default='')
-    map = models.FileField(upload_to='media/maps/', blank=True)
+    map = models.FileField(upload_to='media/maps/')
 
     def __str__(self):
         return self.name
