@@ -7,6 +7,20 @@ from django.urls import reverse_lazy, reverse
 
 from .models import Map
 from .forms import MapForm
+from .forms import RegisterForm
+
+# Create your views here.
+def register(response):
+    if response.method == "POST":
+        form = RegisterForm(response.POST)
+        if form.is_valid():
+            form.save()
+        
+        return redirect("/dancingcubeapp")
+    else:
+        form = RegisterForm()
+    
+    return render(response, "registration/register.html", {"form":form})
 
 def index(request):
     context = {}
