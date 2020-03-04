@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic, View
 from django.urls import reverse_lazy, reverse
-
+from django.contrib.auth import login, authenticate
 # Create your views here.
 
 from .models import Map
@@ -15,11 +15,13 @@ def register(response):
         form = RegisterForm(response.POST)
         if form.is_valid():
             form.save()
-        
-        return redirect("/dancingcubeapp")
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect("index")
     else:
         form = RegisterForm()
-    
     return render(response, "registration/register.html", {"form":form})
 
 def index(request):
