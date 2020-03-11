@@ -1,5 +1,11 @@
 from django.db import models
 from django.urls import reverse
+#from django.contrib.sites.models import Site
+
+def generate_filename(filename): #it adds the image in a folder with the current year
+    ext = filename.split('.')[-1]
+    year = datetime.datetime.now().year
+    return '/' + str(year) + str(int(time())) + '.' + ext
 
 class Map(models.Model):
     name = models.CharField(max_length=30, default='')
@@ -17,7 +23,7 @@ class Map(models.Model):
         choices=diff_rates,
         default=EASY
         )
-    image = models.ImageField(upload_to='media/images/')
+    image = models.ImageField(upload_to=generate_filename, blank=True, null=True)
     uploader = models.CharField(max_length=200, default='')
     map = models.FileField(upload_to='media/maps/')
 

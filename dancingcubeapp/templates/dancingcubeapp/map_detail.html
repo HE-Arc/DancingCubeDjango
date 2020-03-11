@@ -5,7 +5,7 @@
 {% block content %}
     <a href="{% url 'dashboard-maps' %}" class="btn btn-outline-primary">back to all maps</a>
     <h1>Specific map</h1>
-    <img src="/{{ map.image.url }}" alt="/{{ map.image.url }}">
+    <img <img src="{{ map.image.url }}">
     name: <b>{{ map.name }}</b>
     <a href="{% url 'map-update' map.id %}" class="btn btn-outline-danger">update</a>
     <a href="{% url 'map-delete' map.id %}" class="btn btn-outline-warning">delete</a>
