@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import mimetypes
+mimetypes.add_type("text/css", ".css", True)
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -23,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'mrev!-v0&n@5^6_n4*zkr+0m1_pgu2!0o#spu@cs+7_3db7*6d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['dancing3.srvz-webapp.he-arc.ch', '127.0.0.1']
 
@@ -152,3 +155,11 @@ LOGIN_REDIRECT_URL = '/'
 
 MEDIA_URL = '//'
 MEDIA_ROOT = os.path.join(BASE_DIR, '')
+
+'''
+#STATICFILES_DIRS = (
+#    os.path.join(BASE_DIR, 'dancingcubeapp/static'),
+#)
+#STATIC_ROOT="/var/www/static/"
+STATIC_ROOT=os.path.join(BASE_DIR, 'static'),
+'''
