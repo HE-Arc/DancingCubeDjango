@@ -3,6 +3,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic, View
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 # Create your views here.
 
 from .models import Map
@@ -44,11 +46,11 @@ class MapListView(generic.ListView):
 class MapDetailView(generic.DetailView):
     model = Map
 
-class MapCreateView(generic.edit.CreateView):
+class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Map
     fields = '__all__'# TODO: add gestion pour que l'uploader soit le user connecté
 
-class MapUpdateView(generic.edit.UpdateView):
+class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     model = Map
     fields = '__all__'
     def get_queryset(self):
@@ -56,6 +58,8 @@ class MapUpdateView(generic.edit.UpdateView):
         # replace this with whatever makes sense for your application
         return qs.filter(uploader=self.request.user)
 
-class MapDeleteView(generic.edit.DeleteView):
+
+class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
+    login_url = 'login'
     model = Map
     success_url = reverse_lazy('dashboard-maps')

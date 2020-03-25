@@ -1,4 +1,6 @@
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 from . import views
 
@@ -12,4 +14,5 @@ urlpatterns = [
     path('dashboard/maps/update/<pk>/', views.MapUpdateView.as_view(), name='map-update'),
     path('dashboard/maps/delete/<pk>/', views.MapDeleteView.as_view(), name='map-delete'),
     path('dashboard/maps/<pk>/', views.MapDetailView.as_view(), name='map-detail'),
-]
+] + static(settings.MEDIA_URL,
+                      document_root=settings.MEDIA_ROOT)

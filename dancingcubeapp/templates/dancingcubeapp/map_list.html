@@ -11,7 +11,7 @@
     {% empty %}
         <li>No maps yet.</li>
     {% endfor %}
-    <a href="{% url 'map-create' %}">new map</a>
+    <a href="{% url 'map-create' %}" class="btn btn-outline-primary">new map</a>
     </ul>
 
 {% endblock content %}

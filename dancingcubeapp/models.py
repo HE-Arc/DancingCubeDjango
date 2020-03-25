@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+#from django.contrib.sites.models import Site
 
 class Map(models.Model):
     name = models.CharField(max_length=30, default='')
@@ -17,7 +18,7 @@ class Map(models.Model):
         choices=diff_rates,
         default=EASY
         )
-    image = models.ImageField(upload_to='media/images/')
+    image = models.ImageField(upload_to='media/musics/', blank=True, null=True)
     uploader = models.CharField(max_length=200, default='')
     map = models.FileField(upload_to='media/maps/')
 
