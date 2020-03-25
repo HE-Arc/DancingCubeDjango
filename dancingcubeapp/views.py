@@ -18,7 +18,7 @@ def register(response):
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
-            login(request, user)
+            login(response, user)
             return redirect("index")
     else:
         form = RegisterForm()
@@ -27,7 +27,11 @@ def register(response):
 def index(request):
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
-
+    #current_user = request.user
+    #if(current_user.has_perm('dancingcubeapp.map.update')):
+    #else:
+    #return redirect("login")
+ 
 class DashboardView(generic.TemplateView):
     template_name = "dancingcubeapp/dashboard.html"
 
@@ -47,6 +51,10 @@ class MapCreateView(generic.edit.CreateView):
 class MapUpdateView(generic.edit.UpdateView):
     model = Map
     fields = '__all__'
+    def get_queryset(self):
+        qs = super(MapUpdateView, self).get_queryset()
+        # replace this with whatever makes sense for your application
+        return qs.filter(uploader=self.request.user)
 
 class MapDeleteView(generic.edit.DeleteView):
     model = Map
