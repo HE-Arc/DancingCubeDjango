@@ -1,12 +1,15 @@
 {% extends 'dancingcubeapp/base.html' %}
 
 {% block title %} List details {% endblock %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
     <h1>Create a new map</h1>
-    <form method="post" enctype="multipart/form-data">{% csrf_token %}
-      {{ form.as_p }}
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form|crispy }}
+
       <input type="submit" value="Save">
     </form>
 
