@@ -60,13 +60,20 @@ class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
         form.instance.uploader = uploader
         return super(MapCreateView, self).form_valid(form)
 
+from django.http import Http404
 class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     model = Map
     fields = '__all__'
-    def get_queryset(self):
-        qs = super(MapUpdateView, self).get_queryset()
-        # replace this with whatever makes sense for your application
-        return qs.filter(uploader=self.request.user)
+    def get_object(self, queryset=None):
+        obj = super(MapUpdateView, self).get_object(queryset)
+        print(obj.uploader)
+        if obj.uploader != self.request.user.id:
+            raise Http404(
+                ("You don't own this object")
+            )
+        else:
+            print('y')
+        return obj
 
 
 class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):

@@ -87,6 +87,9 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': '127.0.0.1',
         'PORT': '3306',
+        'OPTIONS': {
+            'sql_mode': 'STRICT_ALL_TABLES',
+        }
         },
     'default_sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -132,7 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-LOGIN_REDIRECT_URL = '//'
+LOGIN_REDIRECT_URL = '/'
 
 MEDIA_URL = '//'
 MEDIA_ROOT = os.path.join(BASE_DIR, '')
