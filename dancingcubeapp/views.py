@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic, View
 from django.urls import reverse_lazy, reverse
+import os
+from django.conf import settings
+
+from zipfile import ZipFile
+
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
@@ -49,7 +54,12 @@ class MapDetailView(generic.DetailView):
 
 class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Map
-    fields = '__all__'# TODO: add gestion pour que l'uploader soit le user connecté
+    fields = ('name', 'music', 'difficulty', 'image', 'map',)
+
+    def form_valid(self, form):
+        uploader = self.request.user
+        form.instance.uploader = uploader
+        return super(MapCreateView, self).form_valid(form)
 
 class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     model = Map
@@ -72,3 +82,17 @@ class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     login_url = 'login'
     model = Map
     success_url = reverse_lazy('dashboard-maps')
+
+def MapDownloadView(request, pk):
+    map = Map.objects.get(pk = pk)
+    with ZipFile('%s' % map.name, 'w') as zipObj:
+        pass
+    #    zipObj.write(os.path.join(settings.MEDIA_ROOT, map.music.url))
+    #    zipObj.write(map.image)
+    #    zipObj.write(map.map)
+    print(os.path.join(settings.MEDIA_ROOT, map.music.url))
+    #response = HttpResponse(mimetype='application/force-download')
+    #response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(map.name)
+    #response['X-Sendfile'] = smart_str(map.name)
+    #return response
+    return redirect('map-detail', pk = pk)

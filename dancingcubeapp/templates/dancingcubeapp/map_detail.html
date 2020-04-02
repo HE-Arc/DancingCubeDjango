@@ -5,10 +5,16 @@
 {% block content %}
     <a href="{% url 'dashboard-maps' %}" class="btn btn-outline-primary">back to all maps</a>
     <h1>Specific map</h1>
-    {% if  map.image  %}
+    {% if map.image %}
         <img src="{{ map.image.url }}">
+    {% else %}
+        <p>no image</p>
     {% endif %}
     name: <b>{{ map.name }}</b>
+    <br>
     <a href="{% url 'map-update' map.id %}" class="btn btn-outline-danger">update</a>
+    <br>
     <a href="{% url 'map-delete' map.id %}" class="btn btn-outline-warning">delete</a>
+    <br>
+    <a href="{% url 'map-download' map.id %}" class="btn btn-outline-info">download</a>
 {% endblock content %}
