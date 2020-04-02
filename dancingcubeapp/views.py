@@ -9,6 +9,7 @@ from zipfile import ZipFile
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404
 
 # Create your views here.
 
@@ -60,19 +61,13 @@ class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
         form.instance.uploader = uploader
         return super(MapCreateView, self).form_valid(form)
 
-from django.http import Http404
 class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     model = Map
     fields = '__all__'
     def get_object(self, queryset=None):
         obj = super(MapUpdateView, self).get_object(queryset)
-        print(obj.uploader)
-        if obj.uploader != self.request.user.id:
-            raise Http404(
-                ("You don't own this object")
-            )
-        else:
-            print('y')
+        if obj.uploader != self.request.user:
+            raise Http404(("You don't own this object"))
         return obj
 
 
