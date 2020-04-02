@@ -4,14 +4,13 @@
 
 {% block content %}
 
-    <h1>All maps</h1>
-    <ul>
+<h1>All maps</h1>
+<ul>
     {% for map in object_list %}
-        <li><a href="{% url 'map-detail' map.id %}">{{ map.name }}</a></li>
+    <li><a href="{% url 'map-detail' map.id %}">{{ map.name }}</a></li>
     {% empty %}
-        <li>No maps yet.</li>
+    <li>No maps yet.</li>
     {% endfor %}
     <a href="{% url 'map-create' %}" class="btn btn-outline-primary">new map</a>
-    </ul>
-
+</ul>
 {% endblock content %}

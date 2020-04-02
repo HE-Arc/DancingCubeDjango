@@ -4,6 +4,7 @@ from django.views import generic, View
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404
 
 # Create your views here.
 
@@ -53,10 +54,18 @@ class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
 class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     model = Map
     fields = '__all__'
-    def get_queryset(self):
-        qs = super(MapUpdateView, self).get_queryset()
+    def get_object(self, queryset=None):
+        obj = super(MapUpdateView, self).get_object(queryset)
+        if obj.uploader != self.request.user:
+            raise Http404(
+                ("You don't own this object")
+            )
+        else :
+            return obj
+    #def get_queryset(self):
+        #qs = super(MapUpdateView, self).get_queryset()
         # replace this with whatever makes sense for your application
-        return qs.filter(uploader=self.request.user)
+        #return qs.filter(uploader=self.request.user)
 
 
 class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
