@@ -66,9 +66,10 @@ class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     fields = '__all__'
     def get_object(self, queryset=None):
         obj = super(MapUpdateView, self).get_object(queryset)
-        if obj.uploader != self.request.user:
+        if obj.uploader == self.request.user or self.request.user.has_perm('dancingcubeapp.map.update'):
+            return obj
+        else:
             raise Http404(("You don't own this object"))
-        return obj
 
 
 class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
