@@ -77,16 +77,49 @@ class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     model = Map
     success_url = reverse_lazy('dashboard-maps')
 
+
+import tempfile, zipfile
+from wsgiref.util import FileWrapper
 def MapDownloadView(request, pk):
     map = Map.objects.get(pk = pk)
-    with ZipFile('%s' % map.name, 'w') as zipObj:
-        pass
-    #    zipObj.write(os.path.join(settings.MEDIA_ROOT, map.music.url))
-    #    zipObj.write(map.image)
-    #    zipObj.write(map.map)
-    print(os.path.join(settings.MEDIA_ROOT, map.music.url))
-    #response = HttpResponse(mimetype='application/force-download')
-    #response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(map.name)
-    #response['X-Sendfile'] = smart_str(map.name)
-    #return response
-    return redirect('map-detail', pk = pk)
+
+    files_path = os.path.join(settings.MEDIA_ROOT, os.sep.join(map.image.url.split('/')[1:]))
+    
+    '''
+    temp = tempfile.TemporaryFile()
+    archive = zipfile.ZipFile(temp, 'w')
+    filename = files_path
+    archive.write(filename)
+    archive.close()
+    wrapper = FileWrapper(open(filename, "rb"))
+    response = HttpResponse(wrapper, content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename=test.zip'
+    response['Content-Length'] = temp.tell()
+    temp.seek(0)
+    return response
+    '''
+    
+    temp = tempfile.TemporaryFile()
+    image_name = 'he-arc-Logo_rouge_transp_dm8u3QG.png'; # Get your file name here.
+
+    with ZipFile(temp, 'w') as export_zip:
+        export_zip.write(files_path, image_name)
+
+    wrapper = FileWrapper(open(temp, 'rb'))
+    content_type = 'application/zip'
+    content_disposition = f'attachment; filename={temp}'
+
+    response = HttpResponse(wrapper, content_type=content_type)
+    response['Content-Disposition'] = content_disposition
+    return response
+
+    """
+    files_path = os.path.join(settings.MEDIA_ROOT, os.sep.join(map.image.url.split('/')[1:-1]))
+    print(files_path)
+    path_to_zip = make_archive(files_path, "zip", files_path)
+    response = HttpResponse(FileWrapper(open(path_to_zip,'rb')), content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename="{filename}.zip"'.format(
+        filename = map.name.replace(" ", "_")
+    )
+    return response
+    """

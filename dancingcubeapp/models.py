@@ -3,6 +3,8 @@ from django.urls import reverse
 from .validators import validate_file_extension_for_map, validate_file_extension_for_music, validate_file_extension_for_image
 #from django.contrib.sites.models import Site
 
+import os
+
 from django.contrib.auth.models import User
 
 class Map(models.Model):
@@ -23,7 +25,7 @@ class Map(models.Model):
         )
     image = models.ImageField(upload_to='media/musics/', blank=True, null=True, validators=[validate_file_extension_for_image])
     uploader = models.ForeignKey(User, on_delete=models.CASCADE)
-    map = models.FileField(upload_to='media/maps/', validators=[validate_file_extension_for_map])
+    map = models.FileField(upload_to=f'media{os.sep}maps{os.sep}', validators=[validate_file_extension_for_map])
 
     def __str__(self):
         return self.name
