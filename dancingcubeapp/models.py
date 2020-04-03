@@ -23,7 +23,7 @@ class Map(models.Model):
         choices=diff_rates,
         default=EASY
         )
-    image = models.ImageField(upload_to=f'media{os.sep}musics{os.sep}', blank=True, null=True, validators=[validate_file_extension_for_image])
+    image = models.ImageField(upload_to=f'media{os.sep}images{os.sep}', blank=True, null=True, validators=[validate_file_extension_for_image])
     uploader = models.ForeignKey(User, on_delete=models.CASCADE)
     map = models.FileField(upload_to=f'media{os.sep}maps{os.sep}', validators=[validate_file_extension_for_map])
 
