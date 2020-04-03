@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 class Map(models.Model):
     name = models.CharField(max_length=30, default='')
-    music = models.FileField(upload_to='media/musics/', validators=[validate_file_extension_for_music])
+    music = models.FileField(upload_to=f'media{os.sep}musics{os.sep}', validators=[validate_file_extension_for_music])
     EASY = '1'
     MEDIUM = '2'
     HARD = '3'
@@ -23,7 +23,7 @@ class Map(models.Model):
         choices=diff_rates,
         default=EASY
         )
-    image = models.ImageField(upload_to='media/musics/', blank=True, null=True, validators=[validate_file_extension_for_image])
+    image = models.ImageField(upload_to=f'media{os.sep}musics{os.sep}', blank=True, null=True, validators=[validate_file_extension_for_image])
     uploader = models.ForeignKey(User, on_delete=models.CASCADE)
     map = models.FileField(upload_to=f'media{os.sep}maps{os.sep}', validators=[validate_file_extension_for_map])
 

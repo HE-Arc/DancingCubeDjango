@@ -54,7 +54,7 @@ class MapDetailView(generic.DetailView):
 
 class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Map
-    fields = ('name', 'map',)
+    fields = ('name', 'music', 'difficulty', 'image', 'map',)
 
     def form_valid(self, form):
         uploader = self.request.user
@@ -83,20 +83,20 @@ from zipfile import ZipFile
 
 def MapDownloadView(request, pk):
     """
-    Downloading a zip without saving the zip file on disk.
+    Downloading a map: create a zip on the fly.
+    Source: https://chase-seibert.github.io/blog/2010/07/23/django-zip-files-create-dynamic-in-memory-archives-with-pythons-zipfile.html .
+    Credit to @Ishydo on Github, thanks.
     """
-    print("DOWNLOADING A ZIP OF FILES")
 
-    #map = Map.objects.get(pk = pk)
+    map = Map.objects.get(pk = pk)
 
-    # Some file paths
-    # To adapt in function of your zip necessities
     zip_files_paths = [
-        os.path.join(settings.MEDIA_ROOT, "file1.map"),
-        os.path.join(settings.MEDIA_ROOT, "file2.txt")
+        os.path.join(settings.MEDIA_ROOT, str(map.image)).replace('/', os.sep).replace('\\', os.sep), # dirty ?
+        os.path.join(settings.MEDIA_ROOT, str(map.map)).replace('/', os.sep).replace('\\', os.sep), 
+        os.path.join(settings.MEDIA_ROOT, str(map.music)).replace('/', os.sep).replace('\\', os.sep), 
     ]
     
-    # In memory zip ;) What you wanted
+    # In memory zip
     in_memory = BytesIO()
     zip = ZipFile(in_memory, "a")
 
@@ -106,16 +106,14 @@ def MapDownloadView(request, pk):
 
     # fix for Linux zip files read in Windows
     for file in zip.filelist:
-        file.create_system = 0    
-        
+        file.create_system = 0
+    
     zip.close()
 
     response = HttpResponse(content_type="application/zip")
-    response["Content-Disposition"] = "attachment; filename=agreatmap.zip"
+    response["Content-Disposition"] = f"attachment; filename=dancingcube_{map.name}.zip"
     
-    in_memory.seek(0)    
+    in_memory.seek(0)
     response.write(in_memory.read())
     
     return response
-
-
