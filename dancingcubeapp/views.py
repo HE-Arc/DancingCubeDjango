@@ -54,7 +54,7 @@ class MapDetailView(generic.DetailView):
 
 class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Map
-    fields = ('name', 'music', 'difficulty', 'image', 'map',)
+    fields = ('name', 'map',)
 
     def form_valid(self, form):
         uploader = self.request.user
@@ -78,48 +78,44 @@ class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     success_url = reverse_lazy('dashboard-maps')
 
 
-import tempfile, zipfile
-from wsgiref.util import FileWrapper
+from io import BytesIO
+from zipfile import ZipFile
+
 def MapDownloadView(request, pk):
-    map = Map.objects.get(pk = pk)
-
-    files_path = os.path.join(settings.MEDIA_ROOT, os.sep.join(map.image.url.split('/')[1:]))
-    
-    '''
-    temp = tempfile.TemporaryFile()
-    archive = zipfile.ZipFile(temp, 'w')
-    filename = files_path
-    archive.write(filename)
-    archive.close()
-    wrapper = FileWrapper(open(filename, "rb"))
-    response = HttpResponse(wrapper, content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename=test.zip'
-    response['Content-Length'] = temp.tell()
-    temp.seek(0)
-    return response
-    '''
-    
-    temp = tempfile.TemporaryFile()
-    image_name = 'he-arc-Logo_rouge_transp_dm8u3QG.png'; # Get your file name here.
-
-    with ZipFile(temp, 'w') as export_zip:
-        export_zip.write(files_path, image_name)
-
-    wrapper = FileWrapper(open(temp, 'rb'))
-    content_type = 'application/zip'
-    content_disposition = f'attachment; filename={temp}'
-
-    response = HttpResponse(wrapper, content_type=content_type)
-    response['Content-Disposition'] = content_disposition
-    return response
-
     """
-    files_path = os.path.join(settings.MEDIA_ROOT, os.sep.join(map.image.url.split('/')[1:-1]))
-    print(files_path)
-    path_to_zip = make_archive(files_path, "zip", files_path)
-    response = HttpResponse(FileWrapper(open(path_to_zip,'rb')), content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename="{filename}.zip"'.format(
-        filename = map.name.replace(" ", "_")
-    )
-    return response
+    Downloading a zip without saving the zip file on disk.
     """
+    print("DOWNLOADING A ZIP OF FILES")
+
+    #map = Map.objects.get(pk = pk)
+
+    # Some file paths
+    # To adapt in function of your zip necessities
+    zip_files_paths = [
+        os.path.join(settings.MEDIA_ROOT, "file1.map"),
+        os.path.join(settings.MEDIA_ROOT, "file2.txt")
+    ]
+    
+    # In memory zip ;) What you wanted
+    in_memory = BytesIO()
+    zip = ZipFile(in_memory, "a")
+
+    # Add files to zip
+    for file in zip_files_paths:
+        zip.write(file, os.path.basename(file))
+
+    # fix for Linux zip files read in Windows
+    for file in zip.filelist:
+        file.create_system = 0    
+        
+    zip.close()
+
+    response = HttpResponse(content_type="application/zip")
+    response["Content-Disposition"] = "attachment; filename=agreatmap.zip"
+    
+    in_memory.seek(0)    
+    response.write(in_memory.read())
+    
+    return response
+
+
