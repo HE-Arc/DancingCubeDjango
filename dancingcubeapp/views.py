@@ -78,48 +78,42 @@ class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     success_url = reverse_lazy('dashboard-maps')
 
 
-import tempfile, zipfile
-from wsgiref.util import FileWrapper
+from io import BytesIO
+from zipfile import ZipFile
+
 def MapDownloadView(request, pk):
+    """
+    Downloading a map: create a zip on the fly.
+    Source: https://chase-seibert.github.io/blog/2010/07/23/django-zip-files-create-dynamic-in-memory-archives-with-pythons-zipfile.html .
+    Credit to @Ishydo on Github, thanks.
+    """
+
     map = Map.objects.get(pk = pk)
 
-    files_path = os.path.join(settings.MEDIA_ROOT, os.sep.join(map.image.url.split('/')[1:]))
+    zip_files_paths = [
+        os.path.join(settings.MEDIA_ROOT, str(map.image)).replace('/', os.sep).replace('\\', os.sep), # dirty ?
+        os.path.join(settings.MEDIA_ROOT, str(map.map)).replace('/', os.sep).replace('\\', os.sep), 
+        os.path.join(settings.MEDIA_ROOT, str(map.music)).replace('/', os.sep).replace('\\', os.sep), 
+    ]
     
-    '''
-    temp = tempfile.TemporaryFile()
-    archive = zipfile.ZipFile(temp, 'w')
-    filename = files_path
-    archive.write(filename)
-    archive.close()
-    wrapper = FileWrapper(open(filename, "rb"))
-    response = HttpResponse(wrapper, content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename=test.zip'
-    response['Content-Length'] = temp.tell()
-    temp.seek(0)
-    return response
-    '''
+    # In memory zip
+    in_memory = BytesIO()
+    zip = ZipFile(in_memory, "a")
+
+    # Add files to zip
+    for file in zip_files_paths:
+        zip.write(file, os.path.basename(file))
+
+    # fix for Linux zip files read in Windows
+    for file in zip.filelist:
+        file.create_system = 0
     
-    temp = tempfile.TemporaryFile()
-    image_name = 'he-arc-Logo_rouge_transp_dm8u3QG.png'; # Get your file name here.
+    zip.close()
 
-    with ZipFile(temp, 'w') as export_zip:
-        export_zip.write(files_path, image_name)
-
-    wrapper = FileWrapper(open(temp, 'rb'))
-    content_type = 'application/zip'
-    content_disposition = f'attachment; filename={temp}'
-
-    response = HttpResponse(wrapper, content_type=content_type)
-    response['Content-Disposition'] = content_disposition
+    response = HttpResponse(content_type="application/zip")
+    response["Content-Disposition"] = f"attachment; filename=dancingcube_{map.name}.zip"
+    
+    in_memory.seek(0)
+    response.write(in_memory.read())
+    
     return response
-
-    """
-    files_path = os.path.join(settings.MEDIA_ROOT, os.sep.join(map.image.url.split('/')[1:-1]))
-    print(files_path)
-    path_to_zip = make_archive(files_path, "zip", files_path)
-    response = HttpResponse(FileWrapper(open(path_to_zip,'rb')), content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename="{filename}.zip"'.format(
-        filename = map.name.replace(" ", "_")
-    )
-    return response
-    """
