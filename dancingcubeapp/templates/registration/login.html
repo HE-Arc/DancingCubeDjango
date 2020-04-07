@@ -2,12 +2,17 @@
 {% extends '../dancingcubeapp/base.html' %}
 
 {% block title %}Login{% endblock %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <h2>Login</h2>
-<form method="post">
+<form method="post" action="">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form|crispy  }}
     <button type="submit">Login</button>
 </form>
+<a href="{% url 'register' %}">Register</a>
+
+
+
 {% endblock %}
