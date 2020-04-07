@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic, View
 from django.urls import reverse_lazy, reverse
+from django.db.models import Q
 import os
 from django.conf import settings
 
@@ -17,7 +18,6 @@ from .models import Map
 from .forms import MapForm
 from .forms import RegisterForm
 
-# Create your views here.
 def register(response):
     if response.method == "POST":
         form = RegisterForm(response.POST)
@@ -40,6 +40,32 @@ def index(request):
     #else:
     #return redirect("login")
  
+def search(request):
+    query_term = request.GET.get('q')
+    
+    qs = filter_maps(query_term)
+
+    context = {
+        'results': qs,
+        'query_term': query_term
+    }
+
+    return render(request, 'dancingcubeapp/search_result.html', context)
+
+def filter_maps(query_term):
+    qs = Map.objects.all()
+
+    if query_term != '' and query_term is not None:
+        qs = qs.filter(
+            Q(name__icontains=query_term) | 
+            Q(music__icontains=query_term) | 
+            Q(music__icontains=query_term) | 
+            Q(uploader__username__icontains=query_term)
+        ).distinct()
+    
+    return qs
+
+
 class DashboardView(generic.TemplateView):
     template_name = "dancingcubeapp/dashboard.html"
 
