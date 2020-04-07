@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic, View
 from django.urls import reverse_lazy, reverse
@@ -10,7 +10,7 @@ from zipfile import ZipFile
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404
+from django.http import Http404, JsonResponse
 
 # Create your views here.
 
@@ -77,6 +77,11 @@ class MapListView(generic.ListView):
 
 class MapDetailView(generic.DetailView):
     model = Map
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_likes'] = self.object.total_likes() # get the number of likes this map has
+        return context
 
 class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Map
@@ -106,6 +111,7 @@ class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
 
 from io import BytesIO
 from zipfile import ZipFile
+from django.template.loader import render_to_string
 
 def MapDownloadView(request, pk):
     """
@@ -143,3 +149,28 @@ def MapDownloadView(request, pk):
     response.write(in_memory.read())
     
     return response
+
+def like_map(request):
+    ''' Whenever a user like a map, add a like to it. If already like by this user, dislike it. '''
+
+    map = get_object_or_404(Map, id=request.POST.get('id')) # Get the map
+    is_liked = False
+    if map.likes.filter(id=request.user.id).exists():
+        map.likes.remove(request.user) # dislike
+        is_liked = False
+    else:
+        map.likes.add(request.user) # like
+        is_liked = True
+    
+    context = {
+        'map': map,
+        'is_liked': is_liked,
+        'total_likes': map.total_likes(), # get the number total of likes
+    }
+
+    # return a json respoonse if it's ajax
+    if request.is_ajax():
+        html = render_to_string('dancingcubeapp/like.html', context, request=request)
+        return JsonResponse({'form': html})
+
+    return render(request, '')

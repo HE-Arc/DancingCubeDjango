@@ -26,9 +26,14 @@ class Map(models.Model):
     image = models.ImageField(upload_to=f'media{os.sep}images{os.sep}', blank=True, null=True, validators=[validate_file_extension_for_image])
     uploader = models.ForeignKey(User, on_delete=models.CASCADE)
     map = models.FileField(upload_to=f'media{os.sep}maps{os.sep}', validators=[validate_file_extension_for_map])
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return reverse('map-detail', kwargs={'pk': self.pk})
+    
+    def total_likes(self):
+        ''' Return how much likes this map has. '''
+        return self.likes.count()

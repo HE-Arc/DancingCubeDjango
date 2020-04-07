@@ -21,4 +21,9 @@
         {% endif %}
     {% endif %}
     <a href="{% url 'map-download' map.id %}" class="btn btn-outline-info">download</a>
+
+    <div id="like_section">
+        {% include 'dancingcubeapp/like.html' %}
+    </div>
+
 {% endblock content %}
