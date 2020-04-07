@@ -4,6 +4,15 @@
 
 {% block content %}
 
+    <form class="form-inline" action={% url 'search' %} method="GET">
+        <div class="col-md-9 mb-3">
+            <input class="form-control" type="search" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ query_term|default_if_none:"" }}" style="width:100%;"/>
+        </div>
+        <div class="col-md-3 mb-3">
+            <button class="btn" type="submit">Search</button>
+        </div>
+    </form>
+
     <h1>
         {% if query_term %}
             All results for '<i>{{ query_term }}</i>': 
@@ -19,7 +28,7 @@
         {% endif %}
         
     {% endif %}
-    <ul>
+    <ul style="list-style-type: none;">
     {% for map in results %}
         <li>
             <div class="card text-white bg-dark mb-3">
