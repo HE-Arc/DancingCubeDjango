@@ -38,7 +38,7 @@ def index(request):
     #if(current_user.has_perm('dancingcubeapp.map.update')):
     #else:
     #return redirect("login")
- 
+
 class DashboardView(generic.TemplateView):
     template_name = "dancingcubeapp/dashboard.html"
 
@@ -56,7 +56,7 @@ class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
     fields = ('name', 'music', 'difficulty', 'image', 'map',)
 
     def form_valid(self, form):
-        uploader = self.request.user
+        uploader = self.request.user.id
         form.instance.uploader = uploader
         return super(MapCreateView, self).form_valid(form)
 
