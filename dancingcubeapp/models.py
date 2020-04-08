@@ -3,9 +3,13 @@ from django.urls import reverse
 from .validators import validate_file_extension_for_map, validate_file_extension_for_music, validate_file_extension_for_image
 #from django.contrib.sites.models import Site
 
+import os
+
+from django.contrib.auth.models import User
+
 class Map(models.Model):
     name = models.CharField(max_length=30, default='')
-    music = models.FileField(upload_to='media/musics/', validators=[validate_file_extension_for_music])
+    music = models.FileField(upload_to=f'media{os.sep}musics{os.sep}', validators=[validate_file_extension_for_music])
     EASY = '1'
     MEDIUM = '2'
     HARD = '3'
@@ -19,12 +23,17 @@ class Map(models.Model):
         choices=diff_rates,
         default=EASY
         )
-    image = models.ImageField(upload_to='media/musics/', blank=True, null=True, validators=[validate_file_extension_for_image])
-    uploader = models.CharField(max_length=200, default='')
-    map = models.FileField(upload_to='media/maps/', validators=[validate_file_extension_for_map])
+    image = models.ImageField(upload_to=f'media{os.sep}images{os.sep}', blank=True, null=True, validators=[validate_file_extension_for_image])
+    uploader = models.ForeignKey(User, on_delete=models.CASCADE)
+    map = models.FileField(upload_to=f'media{os.sep}maps{os.sep}', validators=[validate_file_extension_for_map])
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return reverse('map-detail', kwargs={'pk': self.pk})
+    
+    def total_likes(self):
+        ''' Return how much likes this map has. '''
+        return self.likes.count()

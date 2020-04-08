@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic, View
 from django.urls import reverse_lazy, reverse
+from django.db.models import Q
 import os
 from django.conf import settings
 
@@ -9,6 +10,7 @@ from zipfile import ZipFile
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404, JsonResponse
 
 # Create your views here.
 
@@ -16,7 +18,6 @@ from .models import Map
 from .forms import MapForm
 from .forms import RegisterForm
 
-# Create your views here.
 def register(response):
     if response.method == "POST":
         form = RegisterForm(response.POST)
@@ -39,6 +40,32 @@ def index(request):
     #else:
     #return redirect("login")
 
+def search(request):
+    query_term = request.GET.get('q')
+
+    qs = filter_maps(query_term)
+
+    context = {
+        'results': qs,
+        'query_term': query_term
+    }
+
+    return render(request, 'dancingcubeapp/search_result.html', context)
+
+def filter_maps(query_term):
+    qs = Map.objects.all()
+
+    if query_term != '' and query_term is not None:
+        qs = qs.filter(
+            Q(name__icontains=query_term) |
+            Q(music__icontains=query_term) |
+            Q(music__icontains=query_term) |
+            Q(uploader__username__icontains=query_term)
+        ).distinct()
+
+    return qs
+
+
 class DashboardView(generic.TemplateView):
     template_name = "dancingcubeapp/dashboard.html"
 
@@ -50,6 +77,11 @@ class MapListView(generic.ListView):
 
 class MapDetailView(generic.DetailView):
     model = Map
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_likes'] = self.object.total_likes() # get the number of likes this map has
+        return context
 
 class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Map
@@ -63,10 +95,12 @@ class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
 class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     model = Map
     fields = '__all__'
-    def get_queryset(self):
-        qs = super(MapUpdateView, self).get_queryset()
-        # replace this with whatever makes sense for your application
-        return qs.filter(uploader=self.request.user)
+    def get_object(self, queryset=None):
+        obj = super(MapUpdateView, self).get_object(queryset)
+        if obj.uploader == self.request.user or self.request.user.has_perm('dancingcubeapp.map.update'):
+            return obj
+        else:
+            raise Http404(("You don't own this object"))
 
 
 class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
@@ -74,18 +108,69 @@ class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     model = Map
     success_url = reverse_lazy('dashboard-maps')
 
+
+from io import BytesIO
+from zipfile import ZipFile
+from django.template.loader import render_to_string
+
 def MapDownloadView(request, pk):
+    """
+    Downloading a map: create a zip on the fly.
+    Source: https://chase-seibert.github.io/blog/2010/07/23/django-zip-files-create-dynamic-in-memory-archives-with-pythons-zipfile.html .
+    Credit to @Ishydo on Github, thanks.
+    """
+
     map = Map.objects.get(pk = pk)
-    with ZipFile('%s' % map.name, 'w') as zipObj:
-        pass
-    #    zipObj.write(os.path.join(settings.MEDIA_ROOT, map.music.url))
-    #    zipObj.write(map.image)
-    #    zipObj.write(map.map)
-    #print(settings.MEDIA_ROOT,map.music.url)
-    musical = map.music.url.replace('/', os.sep)
-    print(os.path.join(settings.MEDIA_ROOT, musical[1:]))
-    #response = HttpResponse(mimetype='application/force-download')
-    #response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(map.name)
-    #response['X-Sendfile'] = smart_str(map.name)
-    #return response
-    return redirect('map-detail', pk = pk)
+
+    zip_files_paths = [
+        os.path.join(settings.MEDIA_ROOT, str(map.image)).replace('/', os.sep).replace('\\', os.sep), # dirty ?
+        os.path.join(settings.MEDIA_ROOT, str(map.map)).replace('/', os.sep).replace('\\', os.sep),
+        os.path.join(settings.MEDIA_ROOT, str(map.music)).replace('/', os.sep).replace('\\', os.sep),
+    ]
+
+    # In memory zip
+    in_memory = BytesIO()
+    zip = ZipFile(in_memory, "a")
+
+    # Add files to zip
+    for file in zip_files_paths:
+        zip.write(file, os.path.basename(file))
+
+    # fix for Linux zip files read in Windows
+    for file in zip.filelist:
+        file.create_system = 0
+
+    zip.close()
+
+    response = HttpResponse(content_type="application/zip")
+    response["Content-Disposition"] = f"attachment; filename=dancingcube_{map.name}.zip"
+
+    in_memory.seek(0)
+    response.write(in_memory.read())
+
+    return response
+
+def like_map(request):
+    ''' Whenever a user like a map, add a like to it. If already like by this user, dislike it. '''
+
+    map = get_object_or_404(Map, id=request.POST.get('id')) # Get the map
+    is_liked = False
+    if map.likes.filter(id=request.user.id).exists():
+        map.likes.remove(request.user) # dislike
+        is_liked = False
+    else:
+        map.likes.add(request.user) # like
+        is_liked = True
+
+    context = {
+        'map': map,
+        'is_liked': is_liked,
+        'total_likes': map.total_likes(), # get the number total of likes
+    }
+
+    # return a json respoonse if it's ajax
+    if request.is_ajax():
+        html = render_to_string('dancingcubeapp/like.html', context, request=request)
+        return JsonResponse({'form': html})
+
+    return render(request, '')
