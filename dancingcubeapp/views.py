@@ -88,7 +88,7 @@ class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
     fields = ('name', 'music', 'difficulty', 'image', 'map',)
 
     def form_valid(self, form):
-        uploader = self.request.user.id
+        uploader = self.request.user
         form.instance.uploader = uploader
         return super(MapCreateView, self).form_valid(form)
 
