@@ -12,6 +12,8 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, JsonResponse
 
+from django.utils.translation import gettext as _
+
 # Create your views here.
 
 from .models import Map
@@ -35,10 +37,6 @@ def register(response):
 def index(request):
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
-    #current_user = request.user
-    #if(current_user.has_perm('dancingcubeapp.map.update')):
-    #else:
-    #return redirect("login")
  
 def search(request):
     query_term = request.GET.get('q')
@@ -100,7 +98,8 @@ class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
         if obj.uploader == self.request.user or self.request.user.has_perm('dancingcubeapp.map.update'):
             return obj
         else:
-            raise Http404(("You don't own this object"))
+            # Translators: user updating a map he doesn't own
+            raise Http404(_("You don't own this object"))
 
 
 class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):

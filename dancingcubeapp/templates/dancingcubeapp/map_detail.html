@@ -1,6 +1,12 @@
 {% extends 'dancingcubeapp/base.html' %}
 
+{% load static %}
+
 {% block title %} Details | {{map.name}} {% endblock %}
+
+{% block script %} 
+     <script src="{% static '/js/app.js' %}"></script>
+{% endblock script %}
 
 {% block content %}
     <a href="{% url 'dashboard-maps' %}" class="btn btn-outline-primary">back to all maps</a>

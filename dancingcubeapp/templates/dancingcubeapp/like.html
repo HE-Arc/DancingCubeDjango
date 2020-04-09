@@ -1,6 +1,7 @@
 {{ total_likes }} Like{{ total_likes|pluralize }}
 {# {% if request.user.is_authentificated %} #}
     <form action="{% url 'like_map' %}" method="POST">
+        {% csrf_token %}
         {% if is_liked %}
             <button type="submit" id="like" name="map_id" value="{{ map.id }}" class="btn btn-danger">Dislike</button>
         {% else %}
