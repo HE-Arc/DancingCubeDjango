@@ -79,6 +79,7 @@ class MapDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['total_likes'] = self.object.total_likes() # get the number of likes this map has
+        context['is_liked'] = True if self.object.likes.filter(id=self.request.user.id).exists() else False
         return context
 
 class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
@@ -160,6 +161,9 @@ def like_map(request):
     else:
         map.likes.add(request.user) # like
         is_liked = True
+    
+    print("###")
+    print(map.likes)
     
     context = {
         'map': map,
