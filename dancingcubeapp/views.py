@@ -57,7 +57,6 @@ def filter_maps(query_term):
         qs = qs.filter(
             Q(name__icontains=query_term) | 
             Q(music__icontains=query_term) | 
-            Q(music__icontains=query_term) | 
             Q(uploader__username__icontains=query_term)
         ).distinct()
     
@@ -161,9 +160,6 @@ def like_map(request):
     else:
         map.likes.add(request.user) # like
         is_liked = True
-    
-    print("###")
-    print(map.likes)
     
     context = {
         'map': map,

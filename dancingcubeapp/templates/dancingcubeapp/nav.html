@@ -1,3 +1,6 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
 <nav class="navbar navbar-expand-lg">
   <a class="navbar-brand" href="#">Dancing Cube</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -8,27 +11,45 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="{% url 'index' %}">{% trans "Home" %} <span class="sr-only">(
+          {# Translators: example of translator comment #}
+          {% trans "current" %}
+          )</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'dashboard-maps' %}">Maps</a>
+        <a class="nav-link" href="{% url 'dashboard-maps' %}">
+          {% comment %}Translators: Perhaps let 'Maps' in english, since it's the main model.{% endcomment %}
+          {% trans "Maps" %}
+        </a>
       </li>
       {% if user.is_authenticated %}
-      <li class="nav-item">
-        <a class="nav-link" href="#">{{ user.username }}</a>
-      </li>
-      <li>
-        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-      </li>
-      {% else %}
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'login' %}">Login</a>
-      </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">{% blocktrans %}Hi {{ user.username }}{% endblocktrans %}</a>
+        </li>
+        <li>
+          <a class="nav-link" href="{% url 'logout' %}">{% trans "Logout" %}</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">{% trans "Login" %}</a>
+        </li>
       {% endif %}
+      <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+        <input type="hidden" name="next" value="{{ redirect_to }}">
+        <select name="language"  class="custom-select mr-sm-2" onchange="this.form.submit()">
+          {% get_available_languages as LANGUAGES %}
+          {% get_language_info_list for LANGUAGES as languages %}
+          {% for language in languages %}
+            <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
+              {{ language.name_local }} ({{ language.code }})
+            </option>
+          {% endfor %}
+        </select>
+      </form>
     </ul>
     <form class="form-inline my-2 my-lg-0" action={% url 'search' %} method="GET">
-      <input class="form-control mr-sm-2" type="search" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ query_term|default_if_none:"" }}" />
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      <input class="form-control mr-sm-2" type="search" type="search" placeholder='{% trans "map name, music, ..." %}' aria-label="Search" name="q" value="{{ query_term|default_if_none:"" }}" />
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">{% trans "Search" %}</button>
     </form>
   </div>
 </nav>

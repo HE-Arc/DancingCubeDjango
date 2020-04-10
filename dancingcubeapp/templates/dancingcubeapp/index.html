@@ -1,32 +1,25 @@
 {% extends 'dancingcubeapp/base.html' %}
 
+{% load i18n %}
+
 {% block title %}Home{% endblock %}
 {% load static %}
 
 {% block content %}
 
   <div>
-        <h2>Introduction</h2>
-
+    <h2>{% trans "Introduction" %}</h2>
     <img src="{% static '/images/logo_graycube.png' %}" alt="">
     <p>
-Etienne Hüsler et moi-même Alexander Wohlfahrt, sommes deux développeurs fraîchement diplômés d’un Bachelor en
-développement logiciel, passionnés par l’univers du jeux vidéo. Nous aimons les imaginer, les créer, en parler et y
-jouer. Nous avons donc profité de notre travail de Bachelor pour nous adonner à notre passion, et c’est ainsi qu’à vue
-le jour « Dancing Cube ».
+      {% trans "This sentence is supposed to be in ENG: Etienne Hüsler et moi-même Alexander Wohlfahrt, sommes deux développeurs fraîchement diplômés d’un Bachelor en développement logiciel, passionnés par l’univers du jeux vidéo. Nous aimons les imaginer, les créer, en parler et y jouer. Nous avons donc profité de notre travail de Bachelor pour nous adonner à notre passion, et c’est ainsi qu’à vue le jour « Dancing Cube »." %}
     </p>
   </div>
+  
   <div>
-        <h2>Qu’est ce que Dancing Cube ?</h2>
-
+    <h2>{% trans "What is Dancing Cube ?" %}</h2>
     <p>
-      Dancing Cube est un jeu vidéo musical original, de rythme et de réflexe, se jouant jusqu’à 4 joueurs et développé
-      avec le moteur de jeu Unity. Les joueurs se retrouvent enfermés dans un cube qui se déforme au rythme de la
-      musique. Le jeu permet aux joueurs de visualiser et de ressentir la musique, tout en essayant de survivre aux
-      changements que celle-ci apporte au cube. Un éditeur et un générateur automatique sont fournis aux joueurs pour
-      qu’ils puissent créer leurs niveaux et les partager.
+      {% trans "This sentence is supposed to be in ENG: Dancing Cube est un jeu vidéo musical original, de rythme et de réflexe, se jouant jusqu’à 4 joueurs et développé avec le moteur de jeu Unity. Les joueurs se retrouvent enfermés dans un cube qui se déforme au rythme de la musique. Le jeu permet aux joueurs de visualiser et de ressentir la musique, tout en essayant de survivre aux changements que celle-ci apporte au cube. Un éditeur et un générateur automatique sont fournis aux joueurs pour qu’ils puissent créer leurs niveaux et les partager." %}
     </p>
-
-
   </div>
+
 {% endblock content %}
