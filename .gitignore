@@ -117,4 +117,5 @@ dmypy.json
 
 .vscode
 
-media/
+media/*
+!media/examples/*
