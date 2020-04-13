@@ -1,0 +1,39 @@
+[
+    {
+        "model": "auth.user",
+        "pk": 4,
+        "fields": {
+            "password": "pbkdf2_sha256$180000$yoyTAz7QOMpu$JB1MAgVYrKFaQX5aSTG+w7KeJVYtioV5i2apAuWBtgg=",
+            "last_login": "2020-04-13T16:49:20.471Z",
+            "is_superuser": false,
+            "username": "john",
+            "first_name": "",
+            "last_name": "",
+            "email": "john@john.john",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2020-04-13T16:48:16.183Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 5,
+        "fields": {
+            "password": "pbkdf2_sha256$180000$im07UMjPJtKj$J4fEOlaF49W5Kr9562FJZrdF1ihXOqm3ek9DPftrCYo=",
+            "last_login": "2020-04-13T16:48:35.819Z",
+            "is_superuser": false,
+            "username": "doe",
+            "first_name": "",
+            "last_name": "",
+            "email": "doe@doe.doe",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2020-04-13T16:48:35.417Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    }
+    ]
+    

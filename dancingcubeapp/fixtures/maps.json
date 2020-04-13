@@ -1,16 +1,34 @@
 [
-{
-    "model": "dancingcubeapp.map",
-    "pk": 1,
-    "fields": {
-        "name": "newmap"
+    {
+        "model": "dancingcubeapp.map",
+        "pk": 4,
+        "fields": {
+            "name": "Never gonna give you up",
+            "music": "media/examples/Rick-Astley-Never-Gonna-Give-You-Up.ogg",
+            "difficulty": "2",
+            "image": "media/examples/RickAstley.jpg",
+            "uploader": 5,
+            "map": "media/examples/empty.zip",
+            "likes": [
+                3,
+                4
+            ]
+        }
+    },
+    {
+        "model": "dancingcubeapp.map",
+        "pk": 5,
+        "fields": {
+            "name": "Coffin",
+            "music": "media/examples/VicetoneTonyIgy-Astronomia.ogg",
+            "difficulty": "3",
+            "image": "media/examples/Coffin.jpg",
+            "uploader": 4,
+            "map": "media/examples/empty2.zip",
+            "likes": [
+                3
+            ]
+        }
     }
-},
-{
-    "model": "dancingcubeapp.map",
-    "pk": 2,
-    "fields": {
-        "name": "andagain"
-    }
-}
-]
+    ]
+    
