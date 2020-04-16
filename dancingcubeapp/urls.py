@@ -17,5 +17,6 @@ urlpatterns = [
     path('dashboard/maps/<pk>/', views.MapDetailView.as_view(), name='map-detail'),
     path('search', views.search, name="search"),
     path('like/', views.like_map, name="like_map"),
+    path('dashboard/maps/tags/<slug:name>/', views.TagIndexView.as_view(), name='tagged'),
 ] + static(settings.MEDIA_URL,
                       document_root=settings.MEDIA_ROOT)

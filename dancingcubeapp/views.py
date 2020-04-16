@@ -81,13 +81,42 @@ class MapDetailView(generic.DetailView):
         context['is_liked'] = True if self.object.likes.filter(id=self.request.user.id).exists() else False
         return context
 
+difficulties = {"1": "EASY", "2": "MEDIUM", "3": "HARD"} # hard-coded, not great
 class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Map
-    fields = ('name', 'music', 'difficulty', 'image', 'map',)
+    fields = ('name', 'music', 'difficulty', 'image', 'map', 'tags')
 
     def form_valid(self, form):
-        uploader = self.request.user
-        form.instance.uploader = uploader
+        form.instance.uploader = self.request.user
+
+        # Below are 3 attempt to add the difficulty (EASY, MEDIUM or HARD) as a taggit tag. 
+        # First two attempts creates the tags (in the table *taggit-tag*) but unfortunately does not link the tag with the object (map). no M2M relationship in the *taggit_taggeditem* table...
+
+        # Attempt 1
+        """ # saving with commit=False, https://stackoverflow.com/a/51174259/11553000 or the official documentation https://django-taggit.readthedocs.io/en/latest/forms.html
+        new_map = form.save(commit=False)
+        new_map.uploader =  self.request.user
+        new_map.save()
+        new_map.tags.add(difficulties[form.cleaned_data["difficulty"]])
+        new_map.save() # ?
+        form.save_m2m()
+        """
+
+        # Attempt 2
+        """ # https://stackoverflow.com/a/5361504/11553000
+        name = form.cleaned_data['name']
+        tags = form.cleaned_data['tags']
+        new_map = Map(name=name, uploader=self.request.user)
+        new_map.save()
+        new_map.tags.add(*tags)
+        new_map.tags.add(difficulties[form.cleaned_data["difficulty"]])
+        """
+
+        # Attempt 3
+        """ # adding by force the tag. Does not work at all.
+        #form.cleaned_data["tags"].append(difficulties[form.instance.difficulty]) # add difficulty as tag
+        """
+
         return super(MapCreateView, self).form_valid(form)
 
 class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
@@ -173,3 +202,11 @@ def like_map(request):
         return JsonResponse({'form': html})
 
     return render(request, '')
+
+class TagIndexView(generic.ListView):
+    ''' List all maps with related tag, taken from url slug. Example: /dashboard/maps/tags/mytag/ '''
+    model = Map
+
+    def get_queryset(self):
+        return Map.objects.filter(tags__slug=self.kwargs['name'])
+    

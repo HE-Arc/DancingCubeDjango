@@ -35,8 +35,13 @@
     {% else %}
         <p>no image</p>
     {% endif %}
+    <br/>
     name: <b>{{ map.name }}</b>
-    <br>
+    <br/>
+    {% for tag in map.tags.all %}
+        <span class="badge badge-secondary">{{tag}}</span>
+    {% endfor %}
+    <br/>
     {% if user.is_authenticated %}
         {% if user == map.uploader or perms.map.update_map %}
             <a href="{% url 'map-update' map.id %}" class="btn btn-outline-danger">update</a>

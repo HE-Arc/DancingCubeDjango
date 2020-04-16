@@ -35,7 +35,27 @@
                 <img class="card-img-top" src="{{ map.image }}" alt="{{map.name}}'s image'" style="max-width:100%;max-height:100%;">
                 <div class="card-body">
                     <h5 class="card-title">{{map.name}}</h5>
-                    <p class="card-text">This is a map result in a card.</p>
+                    <p class="card-text">
+                        {# This "if" show the difficulty as a tag badge, even if for now, the difficulty is not a real tag #}
+                        {% if map.difficulty == '1' %}
+                            <span class="badge badge-success">
+                                EASY
+                            </span>
+                        {% elif map.difficulty == '2' %}
+                            <span class="badge badge-primary">
+                                MEDIUM
+                            </span>
+                        {% else %}
+                            <span class="badge badge-danger">
+                                HARD
+                            </span>
+                        {% endif %}
+                        {# This "if" show the difficulty as a tag badge, even if for now, the difficulty is not a real tag #}
+                        <br/>
+                        {% for tag in map.tags.all %}
+                            <a href="{% url 'tagged' tag %}" class="badge badge-secondary">{{ tag }}</a>
+                        {% endfor %}
+                    </p>
                     <a href="{% url 'map-detail' map.id %}" class="btn btn-primary">Details</a>
                 </div>
             </div>
