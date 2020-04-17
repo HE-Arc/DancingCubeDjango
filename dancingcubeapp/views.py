@@ -38,6 +38,43 @@ def index(request):
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
  
+def musicians(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def leveldesigners(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def testers(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+
+def devs(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def trailer(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def influenceurs(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def others(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def follow(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def share(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
 def search(request):
     query_term = request.GET.get('q')
     
