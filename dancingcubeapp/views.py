@@ -40,7 +40,7 @@ def index(request):
  
 def musicians(request):
     context = {}
-    return render(request, 'dancingcubeapp/index.html', context)
+    return render(request, 'dancingcubeapp/musician.html', context)
 
 def leveldesigners(request):
     context = {}
