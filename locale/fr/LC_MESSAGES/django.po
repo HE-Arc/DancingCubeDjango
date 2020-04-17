@@ -1,0 +1,101 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-10 01:46+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\dancingcubeapp\templates\dancingcubeapp\index.html:11
+msgid "Introduction"
+msgstr "Introduction"
+
+#: .\dancingcubeapp\templates\dancingcubeapp\index.html:14
+msgid ""
+"This sentence is supposed to be in ENG: Etienne Hüsler et moi-même Alexander "
+"Wohlfahrt, sommes deux développeurs fraîchement diplômés d’un Bachelor en "
+"développement logiciel, passionnés par l’univers du jeux vidéo. Nous aimons "
+"les imaginer, les créer, en parler et y jouer. Nous avons donc profité de "
+"notre travail de Bachelor pour nous adonner à notre passion, et c’est ainsi "
+"qu’à vue le jour « Dancing Cube »."
+msgstr ""
+"Etienne Hüsler et moi-même Alexander Wohlfahrt, sommes deux développeurs "
+"fraîchement diplômés d’un Bachelor en développement logiciel, passionnés par "
+"l’univers du jeux vidéo. Nous aimons les imaginer, les créer, en parler et y "
+"jouer. Nous avons donc profité de notre travail de Bachelor pour nous "
+"adonner à notre passion, et c’est ainsi qu’à vue le jour « Dancing Cube »."
+
+#: .\dancingcubeapp\templates\dancingcubeapp\index.html:19
+msgid "What is Dancing Cube ?"
+msgstr "Qu'est ce que Dancing Cube ?"
+
+#: .\dancingcubeapp\templates\dancingcubeapp\index.html:21
+msgid ""
+"This sentence is supposed to be in ENG: Dancing Cube est un jeu vidéo "
+"musical original, de rythme et de réflexe, se jouant jusqu’à 4 joueurs et "
+"développé avec le moteur de jeu Unity. Les joueurs se retrouvent enfermés "
+"dans un cube qui se déforme au rythme de la musique. Le jeu permet aux "
+"joueurs de visualiser et de ressentir la musique, tout en essayant de "
+"survivre aux changements que celle-ci apporte au cube. Un éditeur et un "
+"générateur automatique sont fournis aux joueurs pour qu’ils puissent créer "
+"leurs niveaux et les partager."
+msgstr ""
+"Dancing Cube est un jeu vidéo musical original, de rythme et de réflexe, se "
+"jouant jusqu’à 4 joueurs et développé avec le moteur de jeu Unity. Les "
+"joueurs se retrouvent enfermés dans un cube qui se déforme au rythme de la "
+"musique. Le jeu permet aux joueurs de visualiser et de ressentir la musique, "
+"tout en essayant de survivre aux changements que celle-ci apporte au cube. "
+"Un éditeur et un générateur automatique sont fournis aux joueurs pour qu’ils "
+"puissent créer leurs niveaux et les partager."
+
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:13
+msgid "Home"
+msgstr "Accueil"
+
+#. Translators: example of translator comment
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:15
+msgid "current"
+msgstr "actuel"
+
+#. Translators: Perhaps let 'Maps' in english, since it's the main model.
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:21
+msgid "Maps"
+msgstr "Cartes"
+
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:26
+#, python-format
+msgid "Hi %(user.username)s"
+msgstr "Salut %(user.username)s"
+
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:29
+msgid "Logout"
+msgstr "Se déconnecter"
+
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:33
+msgid "Login"
+msgstr "Se connecter"
+
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:38
+msgid "map name, music, ..."
+msgstr "nom de la carte, musique, ..."
+
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:39
+msgid "Search"
+msgstr "Rechercher"
+
+#. Translators: user updating a map he doesn't own
+#: .\dancingcubeapp\views.py:102
+msgid "You don't own this object"
+msgstr "Cet objet ne vous appartient pas"

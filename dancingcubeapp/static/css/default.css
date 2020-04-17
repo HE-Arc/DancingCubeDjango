@@ -11,3 +11,9 @@ a {
 nav {
     border-bottom: 1px solid #BFB1C1;
 }
+
+.card-img-top {
+    width: 100%;
+    height: 10vw;
+    object-fit: cover;
+}
