@@ -6,13 +6,27 @@
 {% load static %}
 
 {% block content %}
+<!--<h2>{% trans "Introduction" %}</h2>
+<img src="{% static '/images/logo_graycube.png' %}" alt="">
+<p>
+  {% trans "This sentence is supposed to be in ENG: Etienne Hüsler et moi-même Alexander Wohlfahrt, sommes deux développeurs fraîchement diplômés d’un Bachelor en développement logiciel, passionnés par l’univers du jeux vidéo. Nous aimons les imaginer, les créer, en parler et y jouer. Nous avons donc profité de notre travail de Bachelor pour nous adonner à notre passion, et c’est ainsi qu’à vue le jour « Dancing Cube »." %}
+</p>
+</div>
+
+<div>
+  <h2>{% trans "What is Dancing Cube ?" %}</h2>
+  <p>
+    {% trans "This sentence is supposed to be in ENG: Dancing Cube est un jeu vidéo musical original, de rythme et de réflexe, se jouant jusqu’à 4 joueurs et développé avec le moteur de jeu Unity. Les joueurs se retrouvent enfermés dans un cube qui se déforme au rythme de la musique. Le jeu permet aux joueurs de visualiser et de ressentir la musique, tout en essayant de survivre aux changements que celle-ci apporte au cube. Un éditeur et un générateur automatique sont fournis aux joueurs pour qu’ils puissent créer leurs niveaux et les partager." %}
+  </p>
+</div>-->
+
 
 <div>
   <div class="text-center my-5">
     <img src="{% static '/images/logo_graycube.png' %}" class="img-fluid" alt="Responsive image">
   </div>
   <div>
-    <h1><b>Introduction / Contextualisation</b></h1>
+    <h2><b>Introduction / Contextualisation</b></h2>
 
     <p>
       Etienne Hüsler et moi-même Alexander Wohlfahrt, sommes deux développeurs fraîchement diplômés d’un Bachelor en
@@ -44,7 +58,7 @@
 
 </div>
 <div>
-  <h1><b>Qu’est ce que Dancing Cube ?</b></h1>
+  <h2><b>Qu’est ce que Dancing Cube ?</b></h2>
 
   <p>
     Dancing Cube est un jeu vidéo musical original, de rythme et de réflexe, se jouant jusqu’à 4 joueurs et développé
@@ -54,21 +68,198 @@
     qu’ils puissent créer leurs niveaux et les partager.
   </p>
 
+  <p>
+    Voici un gameplay de l’un de nos niveaux actuels, la musique et le niveau sont temporaires. Cela ne sera pas présent
+    lors de la sortie officielle du jeu, nous/vous réaliserons/réaliserez de meilleurs niveaux avec vos musiques !
+  </p>
+
+  <iframe src="https://youtu.be/seCt8OPy62w" frameborder="0"></iframe>
+
+
+  <p>
+    Voici une interview du projet, qui présente de manière complète tous les aspects de notre jeu (il s’agit là d’une
+    ancienne version du projet, mais permet tout de même de comprendre le projet dans son ensemble).
+  </p>
+
+  <iframe src="https://youtu.be/Pf66BVNhroM" frameborder="0"></iframe>
+
+  <p>
+    <b>IMPORTANT !</b> Si vous êtes intéressé par nous aider d’une manière ou d’une autre, veuillez parcourir les types
+    de profils que nous recherchons, disponible dans la section suivante. Merci.
+  </p>
+</div>
+
+
+<div>
+  <h2 class="text-center"><b>Ce que nous cherchons en résumé</b></h2>
+  <p>
+    Voici tous les profils de personnes que nous recherchons, lisez le petit résumé de chaque bloc et lisez en détails
+    les points qui vous intéresse.
+  </p>
+  <hr>
+</div>
+
+<div>
+  <div class="row">
+    <div class="col-4">
+      <h3><b>Musiciens</b></h3>
+      <img src="{% static '/images/musicians.png' %}" class="img-fluid" alt="Responsive image">
+      <p>
+        Nous recherchons des musiciens amateurs ou non, qui seraient intéressés par nous fournir des musiques ou d’en
+        réaliser pour l’occasion.
+        (Si vous êtes intéressé cliquez ici)
+      </p>
+    </div>
+
+    <div class="col-4">
+      <h3><b>Créateur de niveau</b></h3>
+
+      <img src="{% static '/images/editor.png' %}" class="img-fluid" alt="Responsive image">
+      <p>
+        Nous cherchons également des personnes amateurs ou non, pour nous réaliser des niveaux dans notre jeu, basés sur
+        les musiques que nous aurons réalisé avec l’aide des musiciens. Un éditeur 3D vous sera fourni afin de les
+        créer.
+        (Si vous êtes intéressé cliquez ici)
+      </p>
+    </div>
+
+    <div class="col-4">
+      <h3><b>Testeurs</b></h3>
+
+      <img src="{% static '/images/game.webp' %}" class="img-fluid" alt="Responsive image">
+      <p>
+        Nous cherchons des testeurs amateurs ou non, afin de tester notre jeu au complet avant sa sortie officielle. Si
+        tester
+        un jeu vidéo vous a un jour intéressé, ce poste est probableme-ait pour vous.
+        (Si vous êtes intéressé cliquez ici)
+      </p>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-4">
+      <h3><b>Développeurs</b></h3>
+
+      <img src="{% static '/images/dev.png' %}" class="img-fluid" alt="Responsive image">
+      <p>
+        Nous cherchons des développeurs expérimenter dans certains domaine bien précis de la création d’un jeu vidéo.
+        (Si vous êtes intéressé cliquez ici)
+      </p>
+    </div>
+
+    <div class="col-4">
+      <h3><b>Trailer</b></h3>
+
+      <img src="{% static '/images/trailer.png' %}" class="img-fluid" alt="Responsive image">
+      <p>
+        Nous cherchons aussi une personne qui pourrait nous réaliser un trailer pour notre jeu.
+        (Si vous êtes intéressé cliquez ici).
+      </p>
+    </div>
+
+
+    <div class="col-4">
+      <h3><b>Influenceurs</b></h3>
+
+      <img src="{% static '/images/influencer.jpg' %}" class="img-fluid" alt="Responsive image">
+      <p>
+        Les influenceurs sont également les bienvenus.
+        (Si vous êtes intéressé cliquez ici).
+      </p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-4">
+      <h3><b>Autres idées</b></h3>
+
+      <img src="{% static '/images/idea.jpg' %}" class="img-fluid" alt="Responsive image">
+      <p>
+        Si vous pensez pouvoir nous aider d’une autre manière dans un autre domaine, comme le sound design, le design,
+        le graphisme (logo, bannière, carte de visite, etc.), la modélisation ou d’autres domaines auquel nous n’avons
+        pas pensé, n’hésitez pas à nous contacter.
+        (Si vous êtes intéressé cliquez ici)
+      </p>
+    </div>
+
+    <div class="col-4">
+      <h3><b>Suivre le projet</b></h3>
+
+      <img src="{% static '/images/follow.png' %}" class="img-fluid" alt="Responsive image">
+      <p>
+        Et finalement, si le projet vous intéresse mais que vous ne voulez ou ne pouvez pas nous aider, vous pouvez
+        nous suivre et rester informé ici.
+      </p>
+    </div>
+
+    <div class="col-4">
+      <h3><b>Partager le projet</b></h3>
+
+      <img src="{% static '/images/reseau.png' %}" class="img-fluid" alt="Responsive image">
+      <p>
+        Si vous connaissez quelqu’un qui pourrait être intéressé par notre projet ou si vous souhaitez nous aider à
+        propager
+        la nouvelle sur les réseaux sociaux ou à d’autres endroits, cliquez ici.
+      </p>
+    </div>
+  </div>
+
+  <hr>
+</div>
+
+<div>
+  <h2><b>Participer à plusieurs postes</b></h2>
+  <p>
+    Comme les deadlines ne sont pas les mêmes pour chaque poste, vous pouvez tout à fait participer à plusieurs aspects
+    du projet. Mettez « Dancing Cube – Poste1, Poste2, PosteX » en sujet de l’email.
+    (En remplaçant bien évidement les « Poste1 », « Poste2 » et « PosteX » par le nom des postes auxquels vous souhaitez
+    participer, merci).
+  </p>
+</div>
+
+
+<div>
+  <h2><b>Conclusion</b></h2>
+  <p>
+    Merci beaucoup d’avoir pris le temps de nous lire 🙂
+  </p>
+
+  <p>
+    Merci d’avance énormément à tous ceux qui prendront contact avec nous, nous avons hâte de voir ce que nous pouvons
+    faire ensemble.
+  </p>
+
+  <p>
+    Merci également à tous ceux qui prendront le temps de remplir le formulaire ou de nous suivre sur nos réseaux
+    sociaux.
+  </p>
+
+  <p>
+    D’ailleurs, n’hésitez pas à partager ce site à toutes les personnes que vous pensez, qui pourraient nous aider d’une
+    manière ou d’une autre dans notre projet.
+  </p>
+
+  <p>
+    En attendant d’entendre parler de vous, nous vous souhaitons une excellente journée !
+  </p>
+
+  <hr>
+</div>
+
+<div>
+  <h2><b>Contact</b></h2>
+  <p>
+    Email : <a href="mailto:dancingcubegame@gmail.com">dancingcubegame@gmail.com</a>
+  </p>
+
+  <p>
+    Téléphone : Si vous souhaitez nous téléphoner, veuillez tout d’abord prendre contact avec nous par e-mail en nous
+    indiquant le motif de votre appel. Merci de votre compréhension.
+  </p>
 
 </div>
-{% endblock content %}
-    <h2>{% trans "Introduction" %}</h2>
-    <img src="{% static '/images/logo_graycube.png' %}" alt="">
-    <p>
-      {% trans "This sentence is supposed to be in ENG: Etienne Hüsler et moi-même Alexander Wohlfahrt, sommes deux développeurs fraîchement diplômés d’un Bachelor en développement logiciel, passionnés par l’univers du jeux vidéo. Nous aimons les imaginer, les créer, en parler et y jouer. Nous avons donc profité de notre travail de Bachelor pour nous adonner à notre passion, et c’est ainsi qu’à vue le jour « Dancing Cube »." %}
-    </p>
-  </div>
-  
-  <div>
-    <h2>{% trans "What is Dancing Cube ?" %}</h2>
-    <p>
-      {% trans "This sentence is supposed to be in ENG: Dancing Cube est un jeu vidéo musical original, de rythme et de réflexe, se jouant jusqu’à 4 joueurs et développé avec le moteur de jeu Unity. Les joueurs se retrouvent enfermés dans un cube qui se déforme au rythme de la musique. Le jeu permet aux joueurs de visualiser et de ressentir la musique, tout en essayant de survivre aux changements que celle-ci apporte au cube. Un éditeur et un générateur automatique sont fournis aux joueurs pour qu’ils puissent créer leurs niveaux et les partager." %}
-    </p>
-  </div>
+
+
 
 {% endblock content %}

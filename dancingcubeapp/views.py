@@ -13,6 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, JsonResponse
 from django.utils.translation import gettext as _
 
+
 # Create your views here.
 
 from .models import Map
