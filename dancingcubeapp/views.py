@@ -100,9 +100,6 @@ def filter_maps(query_term):
     return qs
 
 
-class DashboardView(generic.TemplateView):
-    template_name = "dancingcubeapp/dashboard.html"
-
 class MapListView(generic.ListView):
     model = Map
 
@@ -142,7 +139,7 @@ class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
 class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     login_url = 'login'
     model = Map
-    success_url = reverse_lazy('dashboard-maps')
+    success_url = reverse_lazy('maps')
 
 
 from io import BytesIO
