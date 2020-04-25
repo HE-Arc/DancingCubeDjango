@@ -4,63 +4,42 @@
 
 {% block content %}
 
-    <form class="form-inline" action={% url 'search' %} method="GET">
-        <div class="col-md-9 mb-3">
-            <input class="form-control" type="search" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ query_term|default_if_none:"" }}" style="width:100%;"/>
-        </div>
-        <div class="col-md-3 mb-3">
-            <button class="btn" type="submit">Search</button>
-        </div>
-    </form>
+<h1>Search for a map : </h1>
 
-    <h1>
-        {% if query_term %}
-            All results for '<i>{{ query_term }}</i>': 
-        {% else %}
-            All maps
-        {% endif %}
-    </h1>
-    {% if query_term != None %}
-        {% if results.count > 0 %}
-            <p>{{ results.count }} results found</p>
-        {% else %}
-            <p>No results found</p>
-        {% endif %}
-        
+<form class="form-inline" action={% url 'search' %} method="GET">
+    <div class="col-md-9 mb-3">
+        <input class="form-control" type="search" type="search" placeholder="Search" aria-label="Search" name="q"
+            value="{{ query_term|default_if_none:"" }}" style="width:100%;" />
+    </div>
+    <div class="col-md-3 mb-3">
+        <button class="btn" type="submit">Search</button>
+    </div>
+</form>
+
+<h2>
+    {% if query_term %}
+    All results for '<i>{{ query_term }}</i>':
+    {% else %}
+    All maps
     {% endif %}
-    <ul style="list-style-type: none;">
+</h2>
+{% if query_term != None %}
+{% if results.count > 0 %}
+<p>{{ results.count }} results found</p>
+{% else %}
+<p>No results found</p>
+{% endif %}
+
+{% endif %}
+<ul style="list-style-type: none;">
+
     {% for map in results %}
-        <li>
-            <div class="card text-white bg-dark mb-3">
-                <img class="card-img-top" src="{{ map.image }}" alt="{{map.name}}'s image'" style="max-width:100%;max-height:100%;">
-                <div class="card-body">
-                    <h5 class="card-title">{{map.name}}</h5>
-                    <p class="card-text">
-                        {# This "if" show the difficulty as a tag badge, even if for now, the difficulty is not a real tag #}
-                        {% if map.difficulty == '1' %}
-                            <span class="badge badge-success">
-                                EASY
-                            </span>
-                        {% elif map.difficulty == '2' %}
-                            <span class="badge badge-primary">
-                                MEDIUM
-                            </span>
-                        {% else %}
-                            <span class="badge badge-danger">
-                                HARD
-                            </span>
-                        {% endif %}
-                        {# This "if" show the difficulty as a tag badge, even if for now, the difficulty is not a real tag #}
-                        <br/>
-                        {% for tag in map.tags.all %}
-                            <a href="{% url 'tagged' tag %}" class="badge badge-secondary">{{ tag }}</a>
-                        {% endfor %}
-                    </p>
-                    <a href="{% url 'map-detail' map.id %}" class="btn btn-primary">Details</a>
-                </div>
-            </div>
-        </li>
+    <div class="card text-white bg-dark mt-3" style="padding:10px;">
+        <div class="row">
+            {% include 'dancingcubeapp/partials/card_map.html' %}
+        </div>
+    </div>
     {% endfor %}
-    </ul>
+</ul>
 
 {% endblock content %}

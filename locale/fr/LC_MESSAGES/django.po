@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-10 01:46+0200\n"
+"POT-Creation-Date: 2020-04-25 19:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: .\dancingcubeapp\templates\dancingcubeapp\index.html:11
+#: .\dancingcubeapp\templates\dancingcubeapp\index.html:9
 msgid "Introduction"
 msgstr "Introduction"
 
-#: .\dancingcubeapp\templates\dancingcubeapp\index.html:14
+#: .\dancingcubeapp\templates\dancingcubeapp\index.html:12
 msgid ""
 "This sentence is supposed to be in ENG: Etienne Hüsler et moi-même Alexander "
 "Wohlfahrt, sommes deux développeurs fraîchement diplômés d’un Bachelor en "
@@ -37,11 +37,11 @@ msgstr ""
 "jouer. Nous avons donc profité de notre travail de Bachelor pour nous "
 "adonner à notre passion, et c’est ainsi qu’à vue le jour « Dancing Cube »."
 
-#: .\dancingcubeapp\templates\dancingcubeapp\index.html:19
+#: .\dancingcubeapp\templates\dancingcubeapp\index.html:17
 msgid "What is Dancing Cube ?"
 msgstr "Qu'est ce que Dancing Cube ?"
 
-#: .\dancingcubeapp\templates\dancingcubeapp\index.html:21
+#: .\dancingcubeapp\templates\dancingcubeapp\index.html:19
 msgid ""
 "This sentence is supposed to be in ENG: Dancing Cube est un jeu vidéo "
 "musical original, de rythme et de réflexe, se jouant jusqu’à 4 joueurs et "
@@ -60,42 +60,48 @@ msgstr ""
 "Un éditeur et un générateur automatique sont fournis aux joueurs pour qu’ils "
 "puissent créer leurs niveaux et les partager."
 
-#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:13
-msgid "Home"
-msgstr "Accueil"
-
-#. Translators: example of translator comment
-#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:15
-msgid "current"
-msgstr "actuel"
-
 #. Translators: Perhaps let 'Maps' in english, since it's the main model.
-#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:21
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:16
 msgid "Maps"
 msgstr "Cartes"
 
-#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:26
-#, python-format
-msgid "Hi %(user.username)s"
-msgstr "Salut %(user.username)s"
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:21
+msgid "Links"
+msgstr "Liens"
 
-#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:29
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:40
+msgid "Connected as "
+msgstr "Connecté "
+
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:40
 msgid "Logout"
 msgstr "Se déconnecter"
 
-#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:33
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:44
 msgid "Login"
 msgstr "Se connecter"
 
-#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:38
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:61
 msgid "map name, music, ..."
 msgstr "nom de la carte, musique, ..."
 
-#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:39
+#: .\dancingcubeapp\templates\dancingcubeapp\nav.html:62
 msgid "Search"
 msgstr "Rechercher"
 
 #. Translators: user updating a map he doesn't own
-#: .\dancingcubeapp\views.py:102
+#: .\dancingcubeapp\views.py:164
 msgid "You don't own this object"
 msgstr "Cet objet ne vous appartient pas"
+
+#~ msgid "Hi"
+#~ msgstr "Bonjour"
+
+#~ msgid "Home"
+#~ msgstr "Accueil"
+
+#~ msgid "current"
+#~ msgstr "actuel"
+
+#~ msgid "Hi %(user.username)s"
+#~ msgstr "Salut %(user.username)s"

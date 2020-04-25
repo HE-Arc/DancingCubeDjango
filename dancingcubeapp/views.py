@@ -11,8 +11,8 @@ from zipfile import ZipFile
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, JsonResponse
-
 from django.utils.translation import gettext as _
+
 
 # Create your views here.
 
@@ -38,6 +38,43 @@ def index(request):
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
  
+def musicians(request):
+    context = {}
+    return render(request, 'dancingcubeapp/musician.html', context)
+
+def leveldesigners(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def testers(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+
+def devs(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def trailer(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def influenceurs(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def others(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def follow(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def share(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
 def search(request):
     query_term = request.GET.get('q')
     
@@ -63,9 +100,6 @@ def filter_maps(query_term):
     return qs
 
 
-class DashboardView(generic.TemplateView):
-    template_name = "dancingcubeapp/dashboard.html"
-
 class MapListView(generic.ListView):
     model = Map
 
@@ -77,7 +111,6 @@ class MapDetailView(generic.DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['total_likes'] = self.object.total_likes() # get the number of likes this map has
         context['is_liked'] = True if self.object.likes.filter(id=self.request.user.id).exists() else False
         return context
 
@@ -134,7 +167,7 @@ class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
 class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     login_url = 'login'
     model = Map
-    success_url = reverse_lazy('dashboard-maps')
+    success_url = reverse_lazy('maps')
 
 
 from io import BytesIO
@@ -179,16 +212,20 @@ def MapDownloadView(request, pk):
     return response
 
 def like_map(request):
-    ''' Whenever a user like a map, add a like to it. If already like by this user, dislike it. '''
+    """ Whenever a user like a map, add a like to it. If already like by this user, dislike it. 
+    User has to be authentificated to like/dislike
+    """
 
     map = get_object_or_404(Map, id=request.POST.get('id')) # Get the map
     is_liked = False
-    if map.likes.filter(id=request.user.id).exists():
-        map.likes.remove(request.user) # dislike
-        is_liked = False
-    else:
-        map.likes.add(request.user) # like
-        is_liked = True
+
+    if request.user.is_authenticated:
+        if map.likes.filter(id=request.user.id).exists():
+            map.likes.remove(request.user) # dislike
+            is_liked = False
+        else:
+            map.likes.add(request.user) # like
+            is_liked = True
     
     context = {
         'map': map,
@@ -198,15 +235,19 @@ def like_map(request):
 
     # return a json respoonse if it's ajax
     if request.is_ajax():
-        html = render_to_string('dancingcubeapp/like.html', context, request=request)
+        html = render_to_string('dancingcubeapp/partials/like.html', context, request=request)
         return JsonResponse({'form': html})
 
     return render(request, '')
 
 class TagIndexView(generic.ListView):
-    ''' List all maps with related tag, taken from url slug. Example: /dashboard/maps/tags/mytag/ '''
+    ''' List all maps with related tag, taken from url slug. Example: /maps/tags/mytag/ '''
     model = Map
 
     def get_queryset(self):
         return Map.objects.filter(tags__slug=self.kwargs['name'])
     
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag'] = self.kwargs['name']
+        return context

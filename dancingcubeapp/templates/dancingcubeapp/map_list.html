@@ -4,14 +4,20 @@
 
 {% block content %}
 
-    <h1>All maps</h1>
-    <ul>
-    {% for map in object_list %}
-        <li><a href="{% url 'map-detail' map.id %}">{{ map.name }}</a></li>
-    {% empty %}
-        <li>No maps yet.</li>
-    {% endfor %}
-    <a href="{% url 'map-create' %}" class="btn btn-outline-primary">new map</a>
-    </ul>
 
+<h1>All maps{% if tag %} with tag <i>{{ tag }}</i>{% endif %}</h1>
+
+<ul>
+    <a href="{% url 'map-create' %}" class="btn btn-outline-primary">new map</a>
+
+    {% for map in object_list %}
+    <div class="card text-white bg-dark mt-3" style="padding:10px;">
+        <div class="row">
+            {% include 'dancingcubeapp/partials/card_map.html' %}
+        </div>
+    </div>
+    {% empty %}
+        <p>No maps yet.</p>
+    {% endfor %}
+</ul>
 {% endblock content %}
