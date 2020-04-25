@@ -184,16 +184,20 @@ def MapDownloadView(request, pk):
     return response
 
 def like_map(request):
-    ''' Whenever a user like a map, add a like to it. If already like by this user, dislike it. '''
+    """ Whenever a user like a map, add a like to it. If already like by this user, dislike it. 
+    User has to be authentificated to like/dislike
+    """
 
     map = get_object_or_404(Map, id=request.POST.get('id')) # Get the map
     is_liked = False
-    if map.likes.filter(id=request.user.id).exists():
-        map.likes.remove(request.user) # dislike
-        is_liked = False
-    else:
-        map.likes.add(request.user) # like
-        is_liked = True
+
+    if request.user.is_authenticated:
+        if map.likes.filter(id=request.user.id).exists():
+            map.likes.remove(request.user) # dislike
+            is_liked = False
+        else:
+            map.likes.add(request.user) # like
+            is_liked = True
     
     context = {
         'map': map,

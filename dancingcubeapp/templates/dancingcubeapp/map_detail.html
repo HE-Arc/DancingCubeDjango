@@ -22,7 +22,7 @@
                     $('#like_section').html(response['form'])
                 },
                 error: function (rs, e) {
-                    console.log(rs.responseText); // toast error perhaps ? 
+                    console.log("error while liking the map") // toast error perhaps ? 
                 }
             });
         });
@@ -36,9 +36,9 @@
     <h1>{{ map.name }}</h1>
     <div class="row">
         {% if map.image %}
-        <img style="margin:auto;max-height: 250px;" img-fluid" alt="Responsive image" src="{{ map.image.url }}">
+            <img style="margin:auto;max-height: 250px;" class="img-fluid" alt="Responsive image" src="{{ map.image.url }}">
         {% else %}
-        <p>no image</p>
+            <p>no image</p>
         {% endif %}
     </div>
 
