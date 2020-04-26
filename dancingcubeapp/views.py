@@ -11,6 +11,8 @@ from zipfile import ZipFile
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, JsonResponse
+from django.utils.translation import gettext as _
+
 
 # Create your views here.
 
@@ -35,10 +37,43 @@ def register(response):
 def index(request):
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
-    #current_user = request.user
-    #if(current_user.has_perm('dancingcubeapp.map.update')):
-    #else:
-    #return redirect("login")
+
+def musicians(request):
+    context = {}
+    return render(request, 'dancingcubeapp/musician.html', context)
+
+def leveldesigners(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def testers(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+
+def devs(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def trailer(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def influenceurs(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def others(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def follow(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
+
+def share(request):
+    context = {}
+    return render(request, 'dancingcubeapp/index.html', context)
 
 def search(request):
     query_term = request.GET.get('q')
@@ -59,15 +94,11 @@ def filter_maps(query_term):
         qs = qs.filter(
             Q(name__icontains=query_term) |
             Q(music__icontains=query_term) |
-            Q(music__icontains=query_term) |
             Q(uploader__username__icontains=query_term)
         ).distinct()
 
     return qs
 
-
-class DashboardView(generic.TemplateView):
-    template_name = "dancingcubeapp/dashboard.html"
 
 class MapListView(generic.ListView):
     model = Map
@@ -80,16 +111,45 @@ class MapDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['total_likes'] = self.object.total_likes() # get the number of likes this map has
+        context['is_liked'] = True if self.object.likes.filter(id=self.request.user.id).exists() else False
         return context
 
+difficulties = {"1": "EASY", "2": "MEDIUM", "3": "HARD"} # hard-coded, not great
 class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Map
-    fields = ('name', 'music', 'difficulty', 'image', 'map',)
+    fields = ('name', 'music', 'difficulty', 'image', 'map', 'tags')
 
     def form_valid(self, form):
-        uploader = self.request.user
-        form.instance.uploader = uploader
+        form.instance.uploader = self.request.user
+
+        # Below are 3 attempt to add the difficulty (EASY, MEDIUM or HARD) as a taggit tag.
+        # First two attempts creates the tags (in the table *taggit-tag*) but unfortunately does not link the tag with the object (map). no M2M relationship in the *taggit_taggeditem* table...
+
+        # Attempt 1
+        """ # saving with commit=False, https://stackoverflow.com/a/51174259/11553000 or the official documentation https://django-taggit.readthedocs.io/en/latest/forms.html
+        new_map = form.save(commit=False)
+        new_map.uploader =  self.request.user
+        new_map.save()
+        new_map.tags.add(difficulties[form.cleaned_data["difficulty"]])
+        new_map.save() # ?
+        form.save_m2m()
+        """
+
+        # Attempt 2
+        """ # https://stackoverflow.com/a/5361504/11553000
+        name = form.cleaned_data['name']
+        tags = form.cleaned_data['tags']
+        new_map = Map(name=name, uploader=self.request.user)
+        new_map.save()
+        new_map.tags.add(*tags)
+        new_map.tags.add(difficulties[form.cleaned_data["difficulty"]])
+        """
+
+        # Attempt 3
+        """ # adding by force the tag. Does not work at all.
+        #form.cleaned_data["tags"].append(difficulties[form.instance.difficulty]) # add difficulty as tag
+        """
+
         return super(MapCreateView, self).form_valid(form)
 
 class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
@@ -100,13 +160,14 @@ class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
         if obj.uploader == self.request.user or self.request.user.has_perm('dancingcubeapp.map.update'):
             return obj
         else:
-            raise Http404(("You don't own this object"))
+            # Translators: user updating a map he doesn't own
+            raise Http404(_("You don't own this object"))
 
 
 class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     login_url = 'login'
     model = Map
-    success_url = reverse_lazy('dashboard-maps')
+    success_url = reverse_lazy('maps')
 
 
 from io import BytesIO
@@ -151,16 +212,20 @@ def MapDownloadView(request, pk):
     return response
 
 def like_map(request):
-    ''' Whenever a user like a map, add a like to it. If already like by this user, dislike it. '''
+    """ Whenever a user like a map, add a like to it. If already like by this user, dislike it.
+    User has to be authentificated to like/dislike
+    """
 
     map = get_object_or_404(Map, id=request.POST.get('id')) # Get the map
     is_liked = False
-    if map.likes.filter(id=request.user.id).exists():
-        map.likes.remove(request.user) # dislike
-        is_liked = False
-    else:
-        map.likes.add(request.user) # like
-        is_liked = True
+
+    if request.user.is_authenticated:
+        if map.likes.filter(id=request.user.id).exists():
+            map.likes.remove(request.user) # dislike
+            is_liked = False
+        else:
+            map.likes.add(request.user) # like
+            is_liked = True
 
     context = {
         'map': map,
@@ -170,7 +235,19 @@ def like_map(request):
 
     # return a json respoonse if it's ajax
     if request.is_ajax():
-        html = render_to_string('dancingcubeapp/like.html', context, request=request)
+        html = render_to_string('dancingcubeapp/partials/like.html', context, request=request)
         return JsonResponse({'form': html})
 
     return render(request, '')
+
+class TagIndexView(generic.ListView):
+    ''' List all maps with related tag, taken from url slug. Example: /maps/tags/mytag/ '''
+    model = Map
+
+    def get_queryset(self):
+        return Map.objects.filter(tags__slug=self.kwargs['name'])
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag'] = self.kwargs['name']
+        return context

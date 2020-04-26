@@ -1,0 +1,65 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+<nav class="navbar navbar-expand-lg">
+  <a class="navbar-brand" href="/">Dancing Cube</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'maps' %}">
+          {% comment %}Translators: Perhaps let 'Maps' in english, since it's the main model.{% endcomment %}
+          {% trans "Maps" %}
+        </a>
+      </li>
+      <li class="nav-item dropdown show">
+        <a href="#" class="nav-link dropdown-toggle" id="dropdownnav" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {% trans "Links" %} <span class="caret"></span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdownnav">
+          <div class="dropdown-header">We are recruting !</div>
+          <a class="dropdown-item" href="{% url 'musicians' %}">Musicians</a>
+          <a class="dropdown-item text-secondary" href="{% url 'leveldesigners' %}">Level designers</a>
+          <a class="dropdown-item text-secondary" href="{% url 'testers' %}">Testers</a>
+          <a class="dropdown-item text-secondary" href="{% url 'devs' %}">Devs</a>
+          <a class="dropdown-item text-secondary" href="{% url 'trailer' %}">Trailer</a>
+          <a class="dropdown-item text-secondary" href="{% url 'influenceurs' %}">Influenceurs</a>
+          <a class="dropdown-item text-secondary" href="{% url 'others' %}">Others</a>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-header">Usefull links</div>
+          <a class="dropdown-item text-secondary" href="{% url 'follow' %}">Follow</a>
+          <a class="dropdown-item text-secondary" href="{% url 'share' %}">Share</a>
+        </div>
+      </li>
+      {% if user.is_authenticated %}
+        <li class="nav-item">
+          <span class="nav-link">{% blocktrans %}Connected as {% endblocktrans %} <i>{{ user }}</i> (<a href="{% url 'logout' %}">{% trans "Logout" %}</a>)</span>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">{% trans "Login" %}</a>
+        </li>
+      {% endif %}
+      <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+        <input type="hidden" name="next" value="{{ redirect_to }}">
+        <select name="language"  class="custom-select mr-sm-2" onchange="this.form.submit()">
+          {% get_available_languages as LANGUAGES %}
+          {% get_language_info_list for LANGUAGES as languages %}
+          {% for language in languages %}
+            <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
+              {{ language.name_local }} ({{ language.code }})
+            </option>
+          {% endfor %}
+        </select>
+      </form>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" action={% url 'search' %} method="GET">
+      <input class="form-control mr-sm-2" type="search" placeholder='{% trans "map name, music, ..." %}' aria-label="Search" name="q" value="{{ query_term|default_if_none:"" }}" />
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">{% trans "Search" %}</button>
+    </form>
+  </div>
+</nav>

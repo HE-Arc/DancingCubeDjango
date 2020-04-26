@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from .validators import validate_file_extension_for_map, validate_file_extension_for_music, validate_file_extension_for_image
 #from django.contrib.sites.models import Site
+from taggit.managers import TaggableManager
 
 import os
 
@@ -24,9 +25,11 @@ class Map(models.Model):
         default=EASY
         )
     image = models.ImageField(upload_to=f'media{os.sep}images{os.sep}', blank=True, null=True, validators=[validate_file_extension_for_image])
-    uploader = models.ForeignKey(User, on_delete=models.CASCADE)
+    uploader = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     map = models.FileField(upload_to=f'media{os.sep}maps{os.sep}', validators=[validate_file_extension_for_map])
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
+
+    tags = TaggableManager()
 
     def __str__(self):
         return self.name

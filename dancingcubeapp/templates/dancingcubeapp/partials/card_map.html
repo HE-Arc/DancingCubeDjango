@@ -1,0 +1,33 @@
+<div class="col-3">
+    {% if map.image %}
+        <img class="img-fluid" alt="{{map.name}}" src="{{ map.image.url }}">
+    {% else %}
+        <p>no image</p>
+    {% endif %}
+</div>
+
+<div class="col-6">
+    <h2>{{ map.name }}</h2>
+    {# This "if" show the difficulty as a tag badge, even if for now, the difficulty is not a real tag #}
+    {% if map.difficulty == '1' %}
+        <span class="badge badge-success">
+            EASY
+        </span>
+    {% elif map.difficulty == '2' %}
+        <span class="badge badge-primary">
+            MEDIUM
+        </span>
+    {% else %}
+        <span class="badge badge-danger">
+            HARD
+        </span>
+    {% endif %}
+    {# This "if" show the difficulty as a tag badge, even if for now, the difficulty is not a real tag #}
+    {% for tag in map.tags.all %}
+        <a href="{% url 'tagged' tag %}" class="badge badge-secondary">{{ tag }}</a>
+    {% endfor %}
+    <p>Uploaded by : {{map.uploader}}</p>
+    <p>{{ map.total_likes }} Like{{ map.total_likes|pluralize }}</p>
+    <a href="{% url 'map-detail' map.id %}" class="btn btn-primary">Details</a>
+    <a href="{% url 'map-download' map.id %}" class="btn btn-outline-info">download</a>
+</div>
