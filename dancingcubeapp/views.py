@@ -3,24 +3,25 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic, View
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q
-import os
-from django.conf import settings
-
-from zipfile import ZipFile
-
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, JsonResponse
 from django.utils.translation import gettext as _
+from django.template.loader import render_to_string
+from django.conf import settings
 
-
-# Create your views here.
+import os
+from zipfile import ZipFile
+from io import BytesIO
+from zipfile import ZipFile
 
 from .models import Map, MapFile
 from .forms import MapForm
 from .forms import RegisterForm
 
 def register(response):
+    """ Register function for signup """
+    
     if response.method == "POST":
         form = RegisterForm(response.POST)
         if form.is_valid():
@@ -32,53 +33,65 @@ def register(response):
             return redirect("index")
     else:
         form = RegisterForm()
+
     return render(response, "registration/register.html", {"form":form})
 
 def index(request):
+    """ Home page """
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
 
 def musicians(request):
+    """ Musician page (url name: musicians) """
     context = {}
     return render(request, 'dancingcubeapp/musician.html', context)
 
 def leveldesigners(request):
+    """ Level designers page (url name: leveldesigners) """
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
 
 def testers(request):
+    """ Testers page (url name: testers) """
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
 
 
 def devs(request):
+    """ Devs page (url name: devs) """
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
 
 def trailer(request):
+    """ Trailer page (url name: trailer) """
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
 
 def influenceurs(request):
+    """ Influenceurs  page (url name: influenceurs) """
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
 
 def others(request):
+    """ Others page (url name: others) """
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
 
 def follow(request):
+    """ Follow page (url name: follow) """
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
 
 def share(request):
+    """ Share page (url name: share) """
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
 
 def search(request):
-    query_term = request.GET.get('q')
-
-    qs = filter_maps(query_term)
+    """ When performing a research (Search page) """
+    
+    query_term = request.GET.get('q') # Getting the query term (Getter arg)
+    qs = filter_maps(query_term) # Calling the filter function
 
     context = {
         'results': qs,
@@ -88,7 +101,11 @@ def search(request):
     return render(request, 'dancingcubeapp/search_result.html', context)
 
 def filter_maps(query_term):
-    qs = Map.objects.all()
+    """ Filtering maps when performing a research base on an arg (query_term).
+    Filter based on the name of the map, the name of the music, and the uploader's username.
+    """
+    
+    qs = Map.objects.all() # All maps
 
     if query_term != '' and query_term is not None:
         qs = qs.filter(
@@ -101,24 +118,32 @@ def filter_maps(query_term):
 
 
 class MapListView(generic.ListView):
+    """ Listing all maps page (url name: maps) """
+
     model = Map
 
     def get_queryset(self):
         return Map.objects.all()
 
 class MapDetailView(generic.DetailView):
+    """ Specific map page (url name: map-detail) """
+
     model = Map
 
     def get_context_data(self, **kwargs):
+        
         context = super().get_context_data(**kwargs)
-        context['is_liked'] = True if self.object.likes.filter(id=self.request.user.id).exists() else False
+        
+        # Adding to context if the current user already liked this specific map
+        context['is_liked'] = self.object.liked_by_user(self.request.user.id)
+
         return context
 
-difficulties = {"1": "EASY", "2": "MEDIUM", "3": "HARD"} # hard-coded, not great
-
-#based on:
-#https://stackoverflow.com/questions/38257231/how-can-i-upload-multiple-files-to-a-model-field
 class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
+    """ Form page, to create a map by a user. (url name: map-create)
+    Multiple files upload source: https://stackoverflow.com/q/38257231
+    """
+
     model = Map
     fields = ('name', 'music', 'difficulty', 'image', 'map', 'tags')
 
@@ -128,11 +153,15 @@ class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
             obj = form.save(commit=False)
             obj.save()
             for f in self.request.FILES.getlist('map'):
-                mapFile = MapFile(file = f, map = obj)
-                mapFile.save()
+                map_file = MapFile(file = f, map = obj)
+                map_file.save()
 
         # Below are 3 attempt to add the difficulty (EASY, MEDIUM or HARD) as a taggit tag.
-        # First two attempts creates the tags (in the table *taggit-tag*) but unfortunately does not link the tag with the object (map). no M2M relationship in the *taggit_taggeditem* table...
+        # First two attempts creates the tags (in the table *taggit-tag*) but unfortunately does not link the tag with the object (map). 
+        # Unfortunately, there is no M2M relationship in the *taggit_taggeditem* table...
+        # Fore more informations and how we tried to handle it: https://github.com/HE-Arc/DancingCubeDjango/issues/8
+
+        # difficulties = {"1": "EASY", "2": "MEDIUM", "3": "HARD"} # hard-coded, not great
 
         # Attempt 1
         """ # saving with commit=False, https://stackoverflow.com/a/51174259/11553000 or the official documentation https://django-taggit.readthedocs.io/en/latest/forms.html
@@ -162,6 +191,10 @@ class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
         return super(MapCreateView, self).form_valid(form)
 
 class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
+    """ Whenever someones is trying to edit a map. (url name: map-update).
+    This operation is only for the owner of the uploader or an admin. Throw a 404 else.
+    """
+
     model = Map
     fields = ('name', 'music', 'difficulty', 'image', 'map', 'tags')
 
@@ -173,16 +206,12 @@ class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
             # Translators: user updating a map he doesn't own
             raise Http404(_("You don't own this object"))
 
-
 class MapDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
+    """ 'Are you sure you want to delete this map ?' page. (url name: map-delete) """
+
     login_url = 'login'
     model = Map
     success_url = reverse_lazy('maps')
-
-
-from io import BytesIO
-from zipfile import ZipFile
-from django.template.loader import render_to_string
 
 def MapDownloadView(request, pk):
     """
@@ -191,15 +220,15 @@ def MapDownloadView(request, pk):
     Credit to @Ishydo on Github, thanks.
     """
 
-    map = Map.objects.get(pk = pk)
+    map = Map.objects.get(pk = pk) # Getting current map
 
     zip_files_paths = [
         os.path.join(settings.MEDIA_ROOT, str(map.image)).replace('/', os.sep).replace('\\', os.sep), # dirty ?
         os.path.join(settings.MEDIA_ROOT, str(map.music)).replace('/', os.sep).replace('\\', os.sep),
     ]
 
+    # handling multiple files
     map_files = MapFile.objects.filter(map = map)
-
     for map_f in map_files:
         zip_files_paths.append(os.path.join(settings.MEDIA_ROOT, str(map_f.file)).replace('/', os.sep).replace('\\', os.sep),)
 
@@ -218,8 +247,7 @@ def MapDownloadView(request, pk):
     zip.close()
 
     response = HttpResponse(content_type="application/zip")
-    print(map.name.replace(" ", "_"))
-    response["Content-Disposition"] = f"attachment; filename=dancingcube_{map.name.replace(' ', '_')}.zip"
+    response["Content-Disposition"] = f"attachment; filename=dancingcube_{map.name_without_spaces()}.zip"
 
     in_memory.seek(0)
     response.write(in_memory.read())
@@ -228,7 +256,7 @@ def MapDownloadView(request, pk):
 
 def like_map(request):
     """ Whenever a user like a map, add a like to it. If already like by this user, dislike it.
-    User has to be authentificated to like/dislike
+    User has to be authentificated to like/dislike.
     """
 
     map = get_object_or_404(Map, id=request.POST.get('id')) # Get the map
@@ -256,13 +284,13 @@ def like_map(request):
     return render(request, '')
 
 class TagIndexView(generic.ListView):
-    ''' List all maps with related tag, taken from url slug. Example: /maps/tags/mytag/ '''
+    """ List all maps with related tag, taken from url slug. Example: /maps/tags/mytag/ """
     model = Map
 
     def get_queryset(self):
-        return Map.objects.filter(tags__slug=self.kwargs['name'])
+        return Map.objects.filter(tags__slug=self.kwargs['name']) # Filters all maps with the Getter argument (tag name)
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['tag'] = self.kwargs['name']
+        context['tag'] = self.kwargs['name'] # the Getter argument (tag name) in the context
         return context
