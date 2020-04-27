@@ -16,7 +16,7 @@ from django.utils.translation import gettext as _
 
 # Create your views here.
 
-from .models import Map
+from .models import Map, MapFile
 from .forms import MapForm
 from .forms import RegisterForm
 
@@ -37,7 +37,7 @@ def register(response):
 def index(request):
     context = {}
     return render(request, 'dancingcubeapp/index.html', context)
- 
+
 def musicians(request):
     context = {}
     return render(request, 'dancingcubeapp/musician.html', context)
@@ -77,7 +77,7 @@ def share(request):
 
 def search(request):
     query_term = request.GET.get('q')
-    
+
     qs = filter_maps(query_term)
 
     context = {
@@ -92,11 +92,11 @@ def filter_maps(query_term):
 
     if query_term != '' and query_term is not None:
         qs = qs.filter(
-            Q(name__icontains=query_term) | 
-            Q(music__icontains=query_term) | 
+            Q(name__icontains=query_term) |
+            Q(music__icontains=query_term) |
             Q(uploader__username__icontains=query_term)
         ).distinct()
-    
+
     return qs
 
 
@@ -108,21 +108,30 @@ class MapListView(generic.ListView):
 
 class MapDetailView(generic.DetailView):
     model = Map
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['is_liked'] = True if self.object.likes.filter(id=self.request.user.id).exists() else False
         return context
 
 difficulties = {"1": "EASY", "2": "MEDIUM", "3": "HARD"} # hard-coded, not great
+
+#based on:
+#https://stackoverflow.com/questions/38257231/how-can-i-upload-multiple-files-to-a-model-field
 class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Map
     fields = ('name', 'music', 'difficulty', 'image', 'map', 'tags')
 
     def form_valid(self, form):
         form.instance.uploader = self.request.user
+        if self.request.FILES:
+            obj = form.save(commit=False)
+            obj.save()
+            for f in self.request.FILES.getlist('map'):
+                mapFile = MapFile(file = f, map = obj)
+                mapFile.save()
 
-        # Below are 3 attempt to add the difficulty (EASY, MEDIUM or HARD) as a taggit tag. 
+        # Below are 3 attempt to add the difficulty (EASY, MEDIUM or HARD) as a taggit tag.
         # First two attempts creates the tags (in the table *taggit-tag*) but unfortunately does not link the tag with the object (map). no M2M relationship in the *taggit_taggeditem* table...
 
         # Attempt 1
@@ -154,7 +163,8 @@ class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
 
 class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     model = Map
-    fields = '__all__'
+    fields = ('name', 'music', 'difficulty', 'image', 'map', 'tags')
+
     def get_object(self, queryset=None):
         obj = super(MapUpdateView, self).get_object(queryset)
         if obj.uploader == self.request.user or self.request.user.has_perm('dancingcubeapp.map.update'):
@@ -185,10 +195,14 @@ def MapDownloadView(request, pk):
 
     zip_files_paths = [
         os.path.join(settings.MEDIA_ROOT, str(map.image)).replace('/', os.sep).replace('\\', os.sep), # dirty ?
-        os.path.join(settings.MEDIA_ROOT, str(map.map)).replace('/', os.sep).replace('\\', os.sep), 
-        os.path.join(settings.MEDIA_ROOT, str(map.music)).replace('/', os.sep).replace('\\', os.sep), 
+        os.path.join(settings.MEDIA_ROOT, str(map.music)).replace('/', os.sep).replace('\\', os.sep),
     ]
-    
+
+    map_files = MapFile.objects.filter(map = map)
+
+    for map_f in map_files:
+        zip_files_paths.append(os.path.join(settings.MEDIA_ROOT, str(map_f.file)).replace('/', os.sep).replace('\\', os.sep),)
+
     # In memory zip
     in_memory = BytesIO()
     zip = ZipFile(in_memory, "a")
@@ -200,19 +214,20 @@ def MapDownloadView(request, pk):
     # fix for Linux zip files read in Windows
     for file in zip.filelist:
         file.create_system = 0
-    
+
     zip.close()
 
     response = HttpResponse(content_type="application/zip")
-    response["Content-Disposition"] = f"attachment; filename=dancingcube_{map.name}.zip"
-    
+    print(map.name.replace(" ", "_"))
+    response["Content-Disposition"] = f"attachment; filename=dancingcube_{map.name.replace(' ', '_')}.zip"
+
     in_memory.seek(0)
     response.write(in_memory.read())
-    
+
     return response
 
 def like_map(request):
-    """ Whenever a user like a map, add a like to it. If already like by this user, dislike it. 
+    """ Whenever a user like a map, add a like to it. If already like by this user, dislike it.
     User has to be authentificated to like/dislike
     """
 
@@ -226,7 +241,7 @@ def like_map(request):
         else:
             map.likes.add(request.user) # like
             is_liked = True
-    
+
     context = {
         'map': map,
         'is_liked': is_liked,
@@ -246,7 +261,7 @@ class TagIndexView(generic.ListView):
 
     def get_queryset(self):
         return Map.objects.filter(tags__slug=self.kwargs['name'])
-    
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context['tag'] = self.kwargs['name']
