@@ -6,10 +6,14 @@
 {% block content %}
 
     <h1>Create a new map</h1>
+    <script>
+      $(document).ready(function(){
+        $('#id_map').attr('multiple', true);
+      })
+    </script>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form|crispy }}
-
       <input type="submit" value="Save">
     </form>
 
