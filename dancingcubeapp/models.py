@@ -26,7 +26,7 @@ class Map(models.Model):
         )
     image = models.ImageField(upload_to=f'media{os.sep}images{os.sep}', blank=True, null=True, validators=[validate_file_extension_for_image])
     uploader = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    map = models.FileField(upload_to=f'media{os.sep}maps{os.sep}', validators=[validate_file_extension_for_map])
+    map = models.FileField(upload_to=f'media{os.sep}maps{os.sep}', validators=[validate_file_extension_for_map]) #utile uniquement pour que le champ map soit affiché par le form
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     tags = TaggableManager()
@@ -36,7 +36,11 @@ class Map(models.Model):
 
     def get_absolute_url(self):
         return reverse('map-detail', kwargs={'pk': self.pk})
-    
+
     def total_likes(self):
         ''' Return how much likes this map has. '''
         return self.likes.count()
+
+class MapFile(models.Model):
+    file = models.FileField(upload_to=f'media{os.sep}maps{os.sep}', validators=[validate_file_extension_for_map])
+    map = models.ForeignKey(Map, on_delete=models.CASCADE)
