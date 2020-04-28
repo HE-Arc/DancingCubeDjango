@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'mrev!-v0&n@5^6_n4*zkr+0m1_pgu2!0o#spu@cs+7_3db7*6d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['dancing3.srvz-webapp.he-arc.ch', '127.0.0.1']
 
@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'dancingcube.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-"""
+#"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -117,6 +117,7 @@ DATABASES = {
         }
     }
 }
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -166,7 +167,7 @@ LANGUAGES = [
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/'
 
-MEDIA_URL = '//'
+MEDIA_URL="/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, '')
 
 '''
@@ -174,5 +175,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '')
 #    os.path.join(BASE_DIR, 'dancingcubeapp/static'),
 #)
 #STATIC_ROOT="/var/www/static/"
-STATIC_ROOT=os.path.join(BASE_DIR, 'static'),
 '''
+STATIC_ROOT=os.path.join(BASE_DIR, 'static')
