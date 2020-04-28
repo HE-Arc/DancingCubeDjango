@@ -5,7 +5,11 @@
 
 {% block content %}
 
-    <h1>Create a new map</h1>
+    {% if map.name %}
+      <h1>{{ map.name }}</h1>
+    {% else %}
+      <h1>New  map</h1>
+    {% endif %}
     <script>
       $(document).ready(function(){
         $('#id_map').attr('multiple', true);
@@ -14,7 +18,7 @@
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form|crispy }}
-      <input type="submit" value="Save">
+      <input type="submit" value="Save" class="btn btn-success">
     </form>
 
 {% endblock content %}
