@@ -9,9 +9,9 @@
 <form method="post" action="">
     {% csrf_token %}
     {{ form|crispy  }}
-    <button type="submit">Login</button>
+    <button class="btn btn-primary" type="submit">Login</button>
 </form>
-<a href="{% url 'register' %}">Register</a>
+<a class="btn btn-secondary mt-5" href="{% url 'register' %}">Register</a>
 
 
 
