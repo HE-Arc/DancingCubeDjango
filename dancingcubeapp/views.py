@@ -153,6 +153,8 @@ class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
             obj = form.save(commit=False)
             obj.save()
             for f in self.request.FILES.getlist('map'):
+                if f.size > 1024*1024*2:
+                    return redirect("map-create")
                 map_file = MapFile(file = f, map = obj)
                 map_file.save()
 
