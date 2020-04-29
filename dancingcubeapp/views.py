@@ -192,6 +192,11 @@ class MapCreateView(LoginRequiredMixin, generic.edit.CreateView):
 
         return super(MapCreateView, self).form_valid(form)
 
+    def handle_uploaded_file(f):
+        with open('some/file/name.txt', 'wb+') as destination:
+            for chunk in f.chunks():
+                destination.write(chunk)
+
 class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     """ Whenever someones is trying to edit a map. (url name: map-update).
     This operation is only for the owner of the uploader or an admin. Throw a 404 else.
@@ -203,6 +208,11 @@ class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     def get_object(self, queryset=None):
         obj = super(MapUpdateView, self).get_object(queryset)
         if obj.uploader == self.request.user or self.request.user.has_perm('dancingcubeapp.map.update'):
+            map_files = MapFile.objects.filter(map = obj).delete()
+            obj.save()
+            for f in self.request.FILES.getlist('map'):
+                mapFile = MapFile(file = f, map = obj)
+                mapFile.save()
             return obj
         else:
             # Translators: user updating a map he doesn't own
