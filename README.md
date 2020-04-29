@@ -2,7 +2,7 @@
 
 Plateform to share maps in the *Dancing Cube* game.
 
-Made with Django.
+Made with Django by @ourfbht, @julienlinder and @ErgunKilic, 6th semester HE-Arc,
 
 Do not forget to install requirements:
 
