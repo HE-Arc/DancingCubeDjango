@@ -204,11 +204,16 @@ class MapUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     fields = ('name', 'music', 'difficulty', 'image', 'map', 'tags')
 
     def get_object(self, queryset=None):
+        print("salut1")
         obj = super(MapUpdateView, self).get_object(queryset)
         if obj.uploader == self.request.user or self.request.user.has_perm('dancingcubeapp.map.update'):
-            map_files = MapFile.objects.filter(map = obj).delete()
-            obj.save()
+            map_files = MapFile.objects.filter(map = obj)
+            if map_files.exists():
+                map_files.delete()
+                obj.save()
+                print("salu2t")
             for f in self.request.FILES.getlist('map'):
+                print(f)
                 mapFile = MapFile(file = f, map = obj)
                 mapFile.save()
             return obj
