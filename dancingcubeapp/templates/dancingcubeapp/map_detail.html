@@ -22,7 +22,7 @@
                     $('#like_section').html(response['form'])
                 },
                 error: function (rs, e) {
-                    console.log("error while liking the map. Perhaps you're not signed in?") // toast error perhaps ? 
+                    console.log("error while liking the map. Perhaps you're not signed in?") // toast error perhaps ?
                 }
             });
         });
@@ -37,7 +37,7 @@
     <h1>{{ map.name }}</h1>
     <div class="row">
         {% if map.image %}
-            <img style="margin:auto;max-height: 250px;" class="img-fluid" alt="Responsive image" src="{{ map.image.url }}">
+            <img style="margin:auto;max-height: 250px;" class="img-fluid" alt="Responsive image" src="{{  map.image.url }}">
         {% else %}
             <p>no image</p>
         {% endif %}
@@ -58,7 +58,7 @@
             </p>
 
             <p>
-                Difficulty : 
+                Difficulty :
                 {% if map.difficulty == '1' %}
                     <span class="badge badge-success">
                         EASY

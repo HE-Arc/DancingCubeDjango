@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'mrev!-v0&n@5^6_n4*zkr+0m1_pgu2!0o#spu@cs+7_3db7*6d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['dancing3.srvz-webapp.he-arc.ch', '127.0.0.1']
 
